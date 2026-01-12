@@ -1,0 +1,304 @@
+/* ==========================================
+   Budget Tracker Component
+   ========================================== */
+
+.budget-tracker {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+@media (max-width: 639px) {
+    .budget-tracker {
+        padding: var(--space-3);
+        margin-top: var(--space-3);
+    }
+}
+
+.budget-tracker__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.budget-tracker__title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+}
+
+.budget-tracker__loading {
+    text-align: center;
+    padding: var(--space-4);
+    color: var(--text-tertiary);
+}
+
+/* Add Expense Form */
+.budget-tracker__add-form {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.form-group {
+    margin-bottom: var(--space-3);
+}
+
+.form-group label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-1);
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Budget Summary */
+.budget-tracker__summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+@media (max-width: 639px) {
+    .budget-tracker__summary {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-3);
+    }
+}
+
+.budget-summary__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.budget-summary__label {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+.budget-summary__value {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+}
+
+.budget-summary__value.over-budget {
+    color: var(--error);
+}
+
+/* Progress Bar */
+.budget-tracker__progress {
+    margin-bottom: var(--space-4);
+}
+
+.budget-progress__bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--space-2);
+}
+
+.budget-progress__fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width var(--transition-normal);
+}
+
+.budget-progress__fill.under_budget {
+    background: var(--success);
+}
+
+.budget-progress__fill.within_budget {
+    background: var(--accent-500);
+}
+
+.budget-progress__fill.over_budget {
+    background: var(--warning);
+}
+
+.budget-progress__fill.exceeded {
+    background: var(--error);
+}
+
+.budget-progress__text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.budget-status-badge {
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+}
+
+.budget-status-badge.under_budget {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.budget-status-badge.within_budget {
+    background: var(--accent-50);
+    color: var(--accent-600);
+}
+
+.budget-status-badge.over_budget {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.budget-status-badge.exceeded {
+    background: var(--error-light);
+    color: var(--error);
+}
+
+/* Breakdown */
+.budget-tracker__breakdown {
+    margin-bottom: var(--space-4);
+}
+
+.budget-tracker__breakdown h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+}
+
+@media (max-width: 480px) {
+    .breakdown-item {
+        padding: var(--space-2);
+    }
+}
+
+.breakdown-label {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.breakdown-amount {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+}
+
+/* Recommendations */
+.budget-tracker__recommendations {
+    background: var(--accent-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.budget-tracker__recommendations h4 {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-2);
+    color: var(--accent-700);
+}
+
+.budget-tracker__recommendations ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.budget-tracker__recommendations li {
+    font-size: var(--text-sm);
+    color: var(--accent-700);
+    margin-bottom: var(--space-1);
+    padding-left: var(--space-4);
+    position: relative;
+}
+
+.budget-tracker__recommendations li:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent-500);
+}
+
+/* Expenses List */
+.budget-tracker__expenses h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.expenses-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.expense-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+}
+
+@media (max-width: 480px) {
+    .expense-item {
+        padding: var(--space-2);
+    }
+}
+
+.expense-item__info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.expense-item__type {
+    font-size: var(--text-lg);
+}
+
+.expense-item__description {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.expense-item__amount {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+}

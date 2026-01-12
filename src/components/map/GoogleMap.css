@@ -1,0 +1,13 @@
+.google-map {
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-normal);
+}
+
+.google-map:hover {
+    box-shadow: var(--shadow-2xl);
+    border-color: var(--primary-200);
+}

@@ -1,0 +1,1005 @@
+/* ==========================================
+   Route Planner - Minimal Theme
+   ========================================== */
+
+.route-planner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-5);
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-bottom: 120px;
+    /* Space for bottom nav */
+}
+
+@media (max-width: 639px) {
+    .route-planner {
+        padding: var(--space-4);
+        padding-bottom: 100px;
+    }
+}
+
+/* Header */
+.route-planner__header {
+    text-align: center;
+    margin-bottom: var(--space-6);
+}
+
+.route-planner__title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.route-planner__title-icon {
+    font-size: var(--text-3xl);
+}
+
+.route-planner__subtitle {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Progress */
+.route-planner__progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    padding: 0 var(--space-4);
+}
+
+.route-planner__progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    opacity: 0.5;
+    transition: opacity var(--transition-fast);
+}
+
+.route-planner__progress-step.active {
+    opacity: 1;
+}
+
+.route-planner__progress-step .step-number {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-600);
+    color: white;
+    border-radius: 50%;
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+}
+
+.route-planner__progress-step .step-label {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    font-weight: var(--font-medium);
+}
+
+.route-planner__progress-line {
+    flex: 1;
+    max-width: 60px;
+    height: 2px;
+    background: var(--border-subtle);
+}
+
+/* Step container */
+.route-planner__step {
+    background: var(--glass-bg-medium);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    border: 1px solid var(--border-subtle);
+}
+
+/* Section */
+.route-planner__section {
+    margin-bottom: var(--space-6);
+}
+
+.route-planner__section-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.route-planner__section-hint {
+    font-size: var(--text-sm);
+    font-weight: var(--font-normal);
+    color: var(--text-tertiary);
+}
+
+.route-planner__hint {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-2);
+}
+
+/* Destination input */
+.route-planner__destination-input {
+    width: 100%;
+}
+
+/* Quick suggestions */
+.route-planner__suggestions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-3);
+}
+
+.route-planner__suggestion-card {
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid var(--border-subtle);
+}
+
+.route-planner__suggestion-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-light);
+}
+
+.route-planner__suggestion-image {
+    height: 80px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--bg-tertiary);
+}
+
+.route-planner__suggestion-content {
+    padding: var(--space-3);
+}
+
+.route-planner__suggestion-content h4 {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.route-planner__suggestion-rating {
+    font-size: var(--text-xs);
+    color: var(--warning);
+    font-weight: var(--font-medium);
+}
+
+/* Checkbox */
+.route-planner__checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.route-planner__checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-500);
+}
+
+.route-planner__location-badge {
+    padding: var(--space-1) var(--space-2);
+    background: var(--success-light);
+    color: var(--success);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+}
+
+/* Category grid */
+.route-planner__category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+}
+
+.route-planner__category-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--text-secondary);
+}
+
+.route-planner__category-btn:hover {
+    border-color: var(--accent-500);
+}
+
+.route-planner__category-btn.selected {
+    background: rgba(14, 165, 233, 0.12);
+    border-color: var(--accent-500);
+    color: var(--accent-400);
+}
+
+.route-planner__category-icon {
+    font-size: var(--text-xl);
+}
+
+.route-planner__category-label {
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+}
+
+/* Duration options */
+.route-planner__duration-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+}
+
+@media (max-width: 639px) {
+    .route-planner__duration-options {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+}
+
+.route-planner__duration-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--text-secondary);
+}
+
+.route-planner__duration-btn:hover {
+    border-color: var(--accent-500);
+}
+
+.route-planner__duration-btn.selected {
+    background: rgba(14, 165, 233, 0.12);
+    border-color: var(--accent-500);
+    color: var(--accent-400);
+}
+
+.route-planner__duration-icon {
+    font-size: var(--text-2xl);
+}
+
+.route-planner__duration-label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: inherit;
+}
+
+.route-planner__duration-desc {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+/* Walking options */
+.route-planner__walking-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+}
+
+@media (max-width: 639px) {
+    .route-planner__walking-options {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+}
+
+.route-planner__walking-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--text-secondary);
+}
+
+.route-planner__walking-btn:hover {
+    border-color: var(--accent-500);
+}
+
+.route-planner__walking-btn.selected {
+    background: rgba(14, 165, 233, 0.12);
+    border-color: var(--accent-500);
+    color: var(--accent-400);
+}
+
+.route-planner__walking-label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+.route-planner__walking-desc {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+/* Actions */
+.route-planner__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+.route-planner__next-btn {
+    width: 100%;
+    margin-top: var(--space-4);
+}
+
+/* Loading spinner */
+.route-planner__loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: var(--space-2);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error */
+.route-planner__error {
+    padding: var(--space-4);
+    background: var(--error-light);
+    color: var(--error);
+    border-radius: var(--radius-lg);
+    margin-top: var(--space-4);
+    text-align: center;
+}
+
+/* Result */
+.route-planner__result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+.route-planner__result-title {
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+}
+
+.route-planner__result-description {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+/* Map container */
+.route-planner__map-container {
+    margin-bottom: var(--space-5);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+/* AI tip */
+.route-planner__ai-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-5);
+    border: 1px solid var(--border-subtle);
+}
+
+.route-planner__ai-tip-icon {
+    font-size: var(--text-lg);
+}
+
+.route-planner__ai-tip-text {
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* Timeline */
+.route-planner__timeline {
+    margin-bottom: var(--space-5);
+}
+
+.route-planner__timeline-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+}
+
+.route-planner__timeline-item {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--glass-bg-medium);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-3);
+    position: relative;
+    border: 1px solid var(--border-subtle);
+}
+
+.route-planner__timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 28px;
+    bottom: -12px;
+    width: 2px;
+    height: 12px;
+    background: var(--accent-500);
+}
+
+.route-planner__timeline-marker {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-600);
+    color: white;
+    border-radius: 50%;
+    font-weight: var(--font-medium);
+    font-size: var(--text-xs);
+}
+
+.route-planner__timeline-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.route-planner__timeline-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+}
+
+.route-planner__timeline-header h4 {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+}
+
+.route-planner__timeline-rating {
+    color: var(--warning);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+.route-planner__timeline-category {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    background: var(--glass-bg);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    margin-bottom: var(--space-2);
+}
+
+.route-planner__timeline-address {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.route-planner__timeline-reason {
+    margin: var(--space-2) 0 0;
+    padding: var(--space-2);
+    background: var(--glass-bg);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-style: italic;
+    color: var(--text-primary);
+}
+
+.route-planner__timeline-time {
+    display: inline-block;
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+.route-planner__timeline-photo {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    border-radius: var(--radius-lg);
+    background-size: cover;
+    background-position: center;
+    background-color: var(--bg-tertiary);
+}
+
+/* Summary */
+.route-planner__summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--glass-bg-medium);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-5);
+    border: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 639px) {
+    .route-planner__summary {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-4);
+    }
+}
+
+.route-planner__summary-item {
+    text-align: center;
+}
+
+.route-planner__summary-label {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-1);
+}
+
+.route-planner__summary-value {
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    color: var(--accent-400);
+}
+
+/* Highlights */
+.route-planner__highlights {
+    margin-bottom: var(--space-5);
+}
+
+.route-planner__highlights h4 {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+}
+
+.route-planner__highlights-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.route-planner__highlight-tag {
+    padding: var(--space-2) var(--space-3);
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--accent-400);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+/* Result actions */
+.route-planner__result-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+@media (max-width: 480px) {
+    .route-planner__result-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loading overlay */
+.route-planner__loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 9, 11, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+}
+
+.route-planner__loading-content {
+    text-align: center;
+    color: white;
+}
+
+.route-planner__loading-animation {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.route-planner__loading-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--accent-500);
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.route-planner__loading-dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.route-planner__loading-dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* Animation */
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Destination preview */
+.route-planner__destination-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: rgba(14, 165, 233, 0.08);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-5);
+    border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+.route-planner__destination-label {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+}
+
+.route-planner__destination-value {
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.route-planner__destination-edit {
+    padding: var(--space-1) var(--space-3);
+    background: transparent;
+    border: 1px solid var(--accent-500);
+    color: var(--accent-400);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.route-planner__destination-edit:hover {
+    background: var(--accent-500);
+    color: white;
+}
+
+/* Result theme tag */
+.route-planner__result-theme {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--accent-400);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    margin-top: var(--space-2);
+}
+
+/* Timeline improvements */
+.route-planner__timeline-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.route-planner__timeline-tip {
+    font-size: var(--text-xs);
+    color: var(--accent-400);
+    background: rgba(14, 165, 233, 0.08);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+}
+
+/* Loading sub text */
+.route-planner__loading-sub {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: var(--space-2);
+}
+
+/* Responsive */
+@media (max-width: 639px) {
+    .route-planner {
+        padding: var(--space-4);
+        padding-bottom: 100px;
+    }
+
+    .route-planner__header {
+        margin-bottom: var(--space-5);
+    }
+
+    .route-planner__title {
+        font-size: var(--text-xl);
+        gap: var(--space-2);
+    }
+
+    .route-planner__title-icon {
+        font-size: var(--text-2xl);
+    }
+
+    .route-planner__subtitle {
+        font-size: var(--text-sm);
+    }
+
+    .route-planner__progress {
+        margin-bottom: var(--space-5);
+        padding: 0;
+    }
+
+    .route-planner__progress-step .step-number {
+        width: 26px;
+        height: 26px;
+        font-size: var(--text-xs);
+    }
+
+    .route-planner__progress-step .step-label {
+        display: none;
+    }
+
+    .route-planner__progress-line {
+        max-width: 36px;
+    }
+
+    .route-planner__step {
+        padding: var(--space-4);
+        border-radius: var(--radius-lg);
+    }
+
+    .route-planner__section {
+        margin-bottom: var(--space-5);
+    }
+
+    .route-planner__section-title {
+        font-size: var(--text-sm);
+        margin-bottom: var(--space-3);
+    }
+
+    .route-planner__category-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-2);
+    }
+
+    .route-planner__category-btn {
+        padding: var(--space-3);
+        min-height: 72px;
+    }
+
+    .route-planner__category-icon {
+        font-size: var(--text-lg);
+    }
+
+    .route-planner__category-label {
+        font-size: 10px;
+        text-align: center;
+    }
+
+    .route-planner__duration-options {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+
+    .route-planner__duration-btn {
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+        padding: var(--space-3);
+        gap: var(--space-3);
+    }
+
+    .route-planner__duration-icon {
+        font-size: var(--text-xl);
+    }
+
+    .route-planner__duration-label {
+        font-size: var(--text-sm);
+    }
+
+    .route-planner__duration-desc {
+        font-size: var(--text-xs);
+    }
+
+    .route-planner__walking-options {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-2);
+    }
+
+    .route-planner__walking-btn {
+        padding: var(--space-3);
+    }
+
+    .route-planner__walking-label {
+        font-size: var(--text-sm);
+    }
+
+    .route-planner__walking-desc {
+        font-size: 10px;
+    }
+
+    .route-planner__summary {
+        grid-template-columns: repeat(2, 1fr);
+        padding: var(--space-3);
+        gap: var(--space-2);
+    }
+
+    .route-planner__summary-value {
+        font-size: var(--text-sm);
+    }
+
+    .route-planner__summary-label {
+        font-size: 10px;
+    }
+
+    .route-planner__timeline-item {
+        padding: var(--space-3);
+    }
+
+    .route-planner__timeline-marker {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+
+    .route-planner__timeline-header h4 {
+        font-size: var(--text-sm);
+    }
+
+    .route-planner__timeline-photo {
+        display: none;
+    }
+
+    .route-planner__result-header {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .route-planner__result-title {
+        font-size: var(--text-lg);
+    }
+
+    .route-planner__result-description {
+        font-size: var(--text-sm);
+    }
+
+    .route-planner__result-actions {
+        grid-template-columns: 1fr;
+        gap: var(--space-2);
+    }
+
+    .route-planner__result-actions .btn {
+        width: 100%;
+        padding: var(--space-4);
+        font-size: var(--text-sm);
+        border-radius: var(--radius-lg);
+    }
+
+    .route-planner__next-btn {
+        padding: var(--space-4);
+        font-size: var(--text-sm);
+        border-radius: var(--radius-lg);
+    }
+
+    .route-planner__ai-tip {
+        padding: var(--space-3);
+        border-radius: var(--radius-lg);
+    }
+
+    .route-planner__ai-tip-text {
+        font-size: var(--text-xs);
+    }
+
+    .route-planner__destination-preview {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+        padding: var(--space-3);
+    }
+
+    .route-planner__destination-value {
+        font-size: var(--text-sm);
+    }
+
+    .route-planner__highlight-tag {
+        padding: var(--space-1) var(--space-2);
+        font-size: var(--text-xs);
+    }
+}
+
+@media (max-width: 374px) {
+    .route-planner__category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .route-planner__walking-options {
+        grid-template-columns: 1fr;
+    }
+
+    .route-planner__walking-btn {
+        flex-direction: row;
+        justify-content: center;
+        gap: var(--space-2);
+    }
+}

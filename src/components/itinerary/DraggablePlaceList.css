@@ -1,0 +1,242 @@
+/* ==========================================
+   Draggable Place List
+   ========================================== */
+
+.draggable-place-list {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+}
+
+.draggable-place-list__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.draggable-place-list__title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+}
+
+.draggable-place-list__hint {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+.draggable-place-list__items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+/* Place Item */
+.draggable-place-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--bg-card);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-place-item:hover {
+    border-color: var(--accent-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.draggable-place-item.not-editable {
+    cursor: default;
+}
+
+.draggable-place-item.is-dragging {
+    opacity: 0.5;
+    border-color: var(--accent-400);
+    background: var(--accent-50);
+}
+
+.draggable-place-item.drag-over {
+    border-color: var(--accent-500);
+    background: var(--accent-50);
+    transform: translateY(-2px);
+}
+
+.draggable-place-item.dragging {
+    opacity: 0.8;
+    transform: scale(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Index Number */
+.draggable-place-item__index {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    background: var(--accent-100);
+    color: var(--accent-700);
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Drag Handle */
+.draggable-place-item__handle {
+    color: var(--text-tertiary);
+    font-size: var(--text-lg);
+    cursor: grab;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.draggable-place-item__handle:hover {
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+}
+
+.draggable-place-item__handle:active {
+    cursor: grabbing;
+}
+
+/* Content */
+.draggable-place-item__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.draggable-place-item__name {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.draggable-place-item__address {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: var(--space-1);
+}
+
+.draggable-place-item__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.draggable-place-item__rating {
+    font-size: var(--text-xs);
+    color: var(--warning);
+}
+
+.draggable-place-item__tag {
+    font-size: var(--text-xs);
+    padding: 2px 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+}
+
+/* Actions */
+.draggable-place-item__actions {
+    display: flex;
+    gap: var(--space-1);
+    flex-shrink: 0;
+}
+
+.draggable-place-item__btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: var(--bg-tertiary);
+    cursor: pointer;
+    font-size: var(--text-xs);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.draggable-place-item__btn:hover {
+    background: var(--bg-primary);
+}
+
+.draggable-place-item__btn.edit:hover {
+    background: var(--accent-100);
+}
+
+.draggable-place-item__btn.remove:hover {
+    background: var(--error-light, #fef2f2);
+    color: var(--error);
+}
+
+/* Empty State */
+.draggable-place-list__empty {
+    text-align: center;
+    padding: var(--space-8);
+    color: var(--text-tertiary);
+}
+
+/* Mobile Touch Support */
+@media (hover: none) and (pointer: coarse) {
+    .draggable-place-item {
+        cursor: default;
+        padding: var(--space-4) var(--space-3);
+    }
+
+    .draggable-place-item__handle {
+        cursor: default;
+        padding: var(--space-3);
+        font-size: var(--text-xl);
+    }
+
+    .draggable-place-item__actions {
+        gap: var(--space-3);
+    }
+
+    .draggable-place-item__btn {
+        width: 44px;
+        height: 44px;
+        font-size: var(--text-base);
+    }
+
+    .draggable-place-item__name {
+        font-size: var(--text-base);
+    }
+
+    .draggable-place-item__address {
+        font-size: var(--text-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .draggable-place-list {
+        padding: var(--space-3);
+    }
+
+    .draggable-place-item {
+        gap: var(--space-2);
+    }
+
+    .draggable-place-item__index {
+        width: 24px;
+        height: 24px;
+        font-size: var(--text-xs);
+    }
+}
