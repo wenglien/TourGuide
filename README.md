@@ -1,4 +1,4 @@
-# TourGuide - AI-Powered Itinerary Planner 
+# TourGuide - AI-Powered Smart Itinerary Planner
 
 TourGuide is a modern, AI-driven travel planning application designed to help users create personalized, curated, and executable itineraries. Whether you're looking for a deep local experience or a quick city tour, TourGuide uses AI to craft the perfect journey for you.
 

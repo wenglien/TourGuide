@@ -95,7 +95,7 @@
     background: var(--border-subtle);
 }
 
-/* Step container */
+/* Step container - Enhanced */
 .route-planner__step {
     background: var(--glass-bg-medium);
     backdrop-filter: var(--glass-blur);
@@ -103,6 +103,13 @@
     border-radius: var(--radius-xl);
     padding: var(--space-6);
     border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+}
+
+.route-planner__step:hover {
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-md);
 }
 
 /* Section */
@@ -210,7 +217,7 @@
     font-weight: var(--font-medium);
 }
 
-/* Category grid */
+/* Category grid - Enhanced */
 .route-planner__category-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -224,21 +231,43 @@
     gap: var(--space-2);
     padding: var(--space-3);
     background: var(--glass-bg);
-    border: 1px solid var(--border-subtle);
+    border: 1.5px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all var(--transition-normal);
     color: var(--text-secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+.route-planner__category-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(14, 165, 233, 0.08) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
 }
 
 .route-planner__category-btn:hover {
-    border-color: var(--accent-500);
+    border-color: var(--accent-400);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.route-planner__category-btn:hover::before {
+    opacity: 1;
 }
 
 .route-planner__category-btn.selected {
     background: rgba(14, 165, 233, 0.12);
     border-color: var(--accent-500);
     color: var(--accent-400);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15), var(--shadow-xs);
+}
+
+.route-planner__category-btn.selected::before {
+    opacity: 1;
 }
 
 .route-planner__category-icon {
@@ -444,7 +473,7 @@
     line-height: 1.6;
 }
 
-/* Timeline */
+/* Timeline - Enhanced */
 .route-planner__timeline {
     margin-bottom: var(--space-5);
 }
@@ -465,6 +494,14 @@
     margin-bottom: var(--space-3);
     position: relative;
     border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-xs);
+    transition: all var(--transition-normal);
+}
+
+.route-planner__timeline-item:hover {
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(4px);
 }
 
 .route-planner__timeline-item:not(:last-child)::after {

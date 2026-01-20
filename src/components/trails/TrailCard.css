@@ -12,11 +12,28 @@
     overflow: hidden;
     cursor: pointer;
     transition: all var(--transition-normal);
+    position: relative;
+}
+
+.trail-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 70%);
+    transition: opacity var(--transition-normal);
+    pointer-events: none;
 }
 
 .trail-card:hover {
     border-color: var(--border-light);
-    transform: translateY(-4px);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.trail-card:hover::after {
+    opacity: 1;
 }
 
 .trail-card__image-container {
@@ -72,17 +89,34 @@
     align-items: center;
     justify-content: center;
     font-size: var(--text-sm);
-    transition: all var(--transition-fast);
-    border: 1px solid var(--border-subtle);
+    transition: all var(--transition-normal);
+    border: 1.5px solid var(--border-subtle);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     color: var(--text-secondary);
+    position: relative;
+}
+
+.trail-card__save::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at center, rgba(14, 165, 233, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
 }
 
 .trail-card__save:hover {
     background: var(--glass-bg-strong);
     border-color: var(--accent-500);
     color: var(--accent-400);
+    transform: scale(1.1);
+    box-shadow: var(--shadow-sm);
+}
+
+.trail-card__save:hover::before {
+    opacity: 1;
 }
 
 .trail-card__save:active {
@@ -90,9 +124,14 @@
 }
 
 .trail-card__save.saved {
-    background: rgba(14, 165, 233, 0.15);
+    background: rgba(14, 165, 233, 0.2);
     border-color: var(--accent-500);
     color: var(--accent-400);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.trail-card__save.saved::before {
+    opacity: 1;
 }
 
 .trail-card__bottom-overlay {

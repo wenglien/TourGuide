@@ -82,10 +82,14 @@ export const DraggablePlaceList: React.FC<DraggablePlaceListProps> = ({
     // Touch handlers for mobile
     const [touchStartY, setTouchStartY] = useState<number | null>(null);
     const [touchedIndex, setTouchedIndex] = useState<number | null>(null);
+    const [isDraggingMobile, setIsDraggingMobile] = useState(false);
 
     const handleTouchStart = useCallback((e: React.TouchEvent, index: number) => {
+        // Only start drag if touching the handle or if we want the whole item to be draggable
+        // For better UX, we'll allow the whole item but prevent scroll only when moving
         setTouchStartY(e.touches[0].clientY);
         setTouchedIndex(index);
+        setIsDraggingMobile(false);
     }, []);
 
     const handleTouchMove = useCallback((e: React.TouchEvent) => {
@@ -94,15 +98,25 @@ export const DraggablePlaceList: React.FC<DraggablePlaceListProps> = ({
         const currentY = e.touches[0].clientY;
         const diff = currentY - touchStartY;
 
-        // Calculate which index we're hovering over
-        const itemHeight = 80; // Approximate height of each item
-        const indexDiff = Math.round(diff / itemHeight);
-        const newIndex = Math.max(0, Math.min(places.length - 1, touchedIndex + indexDiff));
-
-        if (newIndex !== touchedIndex) {
-            setDragOverIndex(newIndex);
+        // If moved more than 10px, consider it a drag and prevent scrolling
+        if (Math.abs(diff) > 10) {
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+            setIsDraggingMobile(true);
         }
-    }, [touchStartY, touchedIndex, places.length]);
+
+        if (isDraggingMobile) {
+            // Calculate which index we're hovering over
+            const itemHeight = 90; // Approximate height of each item on mobile
+            const indexDiff = Math.round(diff / itemHeight);
+            const newIndex = Math.max(0, Math.min(places.length - 1, touchedIndex + indexDiff));
+
+            if (newIndex !== touchedIndex) {
+                setDragOverIndex(newIndex);
+            }
+        }
+    }, [touchStartY, touchedIndex, places.length, isDraggingMobile]);
 
     const handleTouchEnd = useCallback(() => {
         if (touchedIndex !== null && dragOverIndex !== null && touchedIndex !== dragOverIndex) {
@@ -115,6 +129,7 @@ export const DraggablePlaceList: React.FC<DraggablePlaceListProps> = ({
         setTouchStartY(null);
         setTouchedIndex(null);
         setDragOverIndex(null);
+        setIsDraggingMobile(false);
     }, [touchedIndex, dragOverIndex, places, onReorder]);
 
     return (
@@ -130,9 +145,9 @@ export const DraggablePlaceList: React.FC<DraggablePlaceListProps> = ({
                 {places.map((place, index) => (
                     <div
                         key={place.place_id}
-                        className={`draggable-place-item ${draggedIndex === index ? 'is-dragging' : ''
+                        className={`draggable-place-item ${draggedIndex === index || (touchedIndex === index && isDraggingMobile) ? 'is-dragging' : ''
                             } ${dragOverIndex === index ? 'drag-over' : ''} ${!editable ? 'not-editable' : ''
-                            }`}
+                            } ${isDraggingMobile ? 'mobile-dragging' : ''}`}
                         draggable={editable}
                         onDragStart={(e) => editable && handleDragStart(e, index)}
                         onDragEnd={handleDragEnd}
@@ -149,7 +164,7 @@ export const DraggablePlaceList: React.FC<DraggablePlaceListProps> = ({
 
                         {editable && (
                             <div className="draggable-place-item__handle">
-                                <span>Move</span>
+                                <span>☰</span>
                             </div>
                         )}
 

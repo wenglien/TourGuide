@@ -134,7 +134,11 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         });
     };
 
-    const handleSelectPrediction = (prediction: any) => {
+    const handleSelectPrediction = (e: React.MouseEvent, prediction: any) => {
+        // Prevent the event from bubbling up
+        e.preventDefault();
+        e.stopPropagation();
+        
         // Update input with the main text or description
         const address = prediction.description;
         onChange(address);
@@ -182,7 +186,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
                             <div
                                 key={prediction.place_id}
                                 className="address-autocomplete__item"
-                                onClick={() => handleSelectPrediction(prediction)}
+                                onMouseDown={(e) => handleSelectPrediction(e, prediction)}
                             >
 
                                 <div className="address-autocomplete__text">
