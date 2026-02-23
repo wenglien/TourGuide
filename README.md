@@ -32,7 +32,6 @@ TourGuide is a modern, AI-driven travel planning application designed to help us
 - A Google Maps API key
 - A Groq API key
 
-
 ## PWA Installation
 
 TourGuide is a Progressive Web App. You can "Add to Home Screen" on iOS (Safari) or Android (Chrome) to use it offline and with a native app feel.

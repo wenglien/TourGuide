@@ -1,6 +1,7 @@
 import type { GeneratedItinerary, UserPreferences } from '../types';
 import { regenerateSlot, replacePlaceInTrail, getAITrail } from './aiItineraryService';
 import { checkMultiplePlacesCrowd } from './crowdService';
+import { getCurrentWeatherByCoords, getWeatherByCoords } from './weatherService';
 import type { PlaceDetails } from './googleMaps';
 
 export interface CompanionNotification {
@@ -36,25 +37,67 @@ export class CompanionService {
         this.listeners.forEach(l => l(notification));
     }
 
-    // Simulate a weather change (Rain)
-    simulateRain(
+    /**
+     * Check real weather using OpenWeatherMap API.
+     * If it's currently raining or the forecast for the trip date shows rain,
+     * triggers a notification so the user can switch to indoor alternatives.
+     */
+    async checkRealWeather(
+        coordinates: { lat: number; lng: number },
+        tripDate: string,
         itinerary: GeneratedItinerary,
         preferences: UserPreferences,
-        location: { lat: number; lng: number },
         onUpdate: (newItinerary: GeneratedItinerary) => void
-    ) {
-        const notification: CompanionNotification = {
-            id: `weather_${Date.now()}`,
-            type: 'weather',
-            title: '天氣警報：即將下雨',
-            message: '偵測到未來一小時內將有降雨。建議將下午的戶外行程更換為室內活動。',
-            actionLabel: '更換為室內行程',
-            onAction: async () => {
-                const newItinerary = await regenerateSlot(itinerary, 'afternoon', preferences, location);
-                onUpdate(newItinerary);
+    ): Promise<void> {
+        try {
+            // Check today's live weather first (for companion mode during the trip)
+            const today = new Date().toISOString().split('T')[0];
+            const isToday = tripDate === today;
+
+            let weather = isToday
+                ? await getCurrentWeatherByCoords(coordinates.lat, coordinates.lng)
+                : await getWeatherByCoords(coordinates.lat, coordinates.lng, tripDate);
+
+            if (!weather) return;
+
+            if (weather.isRainy) {
+                const notification: CompanionNotification = {
+                    id: `weather_${Date.now()}`,
+                    type: 'weather',
+                    title: `天氣警報：${weather.description}`,
+                    message: `目前氣溫 ${weather.temp}°C，${weather.description}（濕度 ${weather.humidity ?? '--'}%）。建議將下午的戶外行程更換為室內活動。`,
+                    actionLabel: '更換為室內行程',
+                    onAction: async () => {
+                        const newItinerary = await regenerateSlot(itinerary, 'afternoon', preferences, coordinates);
+                        onUpdate(newItinerary);
+                    }
+                };
+                this.notify(notification);
             }
-        };
-        this.notify(notification);
+        } catch (error) {
+            console.error('Failed to check real weather:', error);
+        }
+    }
+
+    /**
+     * Start periodic weather monitoring (every 30 minutes during a trip)
+     */
+    startWeatherMonitoring(
+        coordinates: { lat: number; lng: number },
+        tripDate: string,
+        itinerary: GeneratedItinerary,
+        preferences: UserPreferences,
+        onUpdate: (newItinerary: GeneratedItinerary) => void,
+        intervalMinutes: number = 30
+    ): () => void {
+        // Check immediately on start
+        this.checkRealWeather(coordinates, tripDate, itinerary, preferences, onUpdate);
+
+        const interval = setInterval(() => {
+            this.checkRealWeather(coordinates, tripDate, itinerary, preferences, onUpdate);
+        }, intervalMinutes * 60 * 1000);
+
+        return () => clearInterval(interval);
     }
 
     // Check real-time crowd information
@@ -88,19 +131,18 @@ export class CompanionService {
             if (crowdInfo.isCurrentlyBusy) {
                 const place = allPlaces.find(p => p.place_id === placeId);
                 if (place) {
-                    const trail = allPlaces.find(p => p.place_id === placeId) 
-                        ? (() => {
-                            for (const slot of timeSlots) {
-                                const trailScore = itinerary[slot];
-                                if (trailScore) {
-                                    const t = getAITrail(trailScore.trailId);
-                                    if (t?.places?.some((p: any) => p.place_id === placeId)) {
-                                        return t;
-                                    }
+                    const trail = (() => {
+                        for (const slot of timeSlots) {
+                            const trailScore = itinerary[slot];
+                            if (trailScore) {
+                                const t = getAITrail(trailScore.trailId);
+                                if (t?.places?.some((p: any) => p.place_id === placeId)) {
+                                    return t;
                                 }
                             }
-                            return null;
-                        })() : null;
+                        }
+                        return null;
+                    })();
 
                     if (trail) {
                         const notification: CompanionNotification = {
@@ -129,19 +171,16 @@ export class CompanionService {
         onUpdate: () => void,
         intervalMinutes: number = 15
     ): () => void {
-        // Check immediately
         this.checkCrowdLevels(itinerary, preferences, location, onUpdate);
 
-        // Then check periodically
         const interval = setInterval(() => {
             this.checkCrowdLevels(itinerary, preferences, location, onUpdate);
         }, intervalMinutes * 60 * 1000);
 
-        // Return cleanup function
         return () => clearInterval(interval);
     }
 
-    // Simulate a crowd alert (kept for backward compatibility)
+    // Kept for backward compatibility
     simulateCrowd(
         trailId: string,
         placeId: string,

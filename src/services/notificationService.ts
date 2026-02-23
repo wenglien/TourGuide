@@ -1,9 +1,8 @@
 // Push Notification Service
-import { messaging } from './firebase';
+import { getMessagingInstance } from './firebase';
 import { getToken, onMessage } from 'firebase/messaging';
 import { saveNotificationToken } from './dbService';
 
-// VAPID key from Firebase Console > Project Settings > Cloud Messaging
 const VAPID_KEY = 'TYpodGrXmOO5520lhyPnb-3RkZ3YVNCk_lAcGPXmjIk';
 
 /**
@@ -16,29 +15,25 @@ export async function requestNotificationPermission(userId: string): Promise<str
             return null;
         }
 
+        const messaging = await getMessagingInstance();
         if (!messaging) {
             console.log('Firebase Messaging is not available');
             return null;
         }
 
-        // Request permission
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
             console.log('Notification permission denied');
             return null;
         }
 
-        // Get FCM token
         const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-        
+
         if (token) {
-            // Save token to database
             try {
                 await saveNotificationToken(userId, token);
-                console.log('FCM token saved:', token);
             } catch (saveError) {
                 console.error('Error saving notification token:', saveError);
-                // Continue even if save fails
             }
             return token;
         } else {
@@ -54,13 +49,13 @@ export async function requestNotificationPermission(userId: string): Promise<str
 /**
  * Listen for foreground messages
  */
-export function setupForegroundMessageHandler() {
+export async function setupForegroundMessageHandler() {
+    const messaging = await getMessagingInstance();
     if (!messaging) return;
 
     onMessage(messaging, (payload) => {
         console.log('Message received:', payload);
-        
-        // Show notification
+
         if (payload.notification) {
             const notificationTitle = payload.notification.title || 'TourGuide';
             const notificationOptions: NotificationOptions = {
@@ -93,8 +88,6 @@ export async function scheduleItineraryReminder(
     reminderTime: Date
 ): Promise<void> {
     try {
-        // This would typically be done on the backend
-        // For now, we'll use a client-side approach with setTimeout (not ideal for production)
         const now = new Date();
         const delay = reminderTime.getTime() - now.getTime();
 
@@ -114,16 +107,10 @@ export async function scheduleItineraryReminder(
     }
 }
 
-/**
- * Check if notifications are supported and enabled
- */
 export function isNotificationSupported(): boolean {
     return 'Notification' in window && 'serviceWorker' in navigator;
 }
 
-/**
- * Check current notification permission
- */
 export function getNotificationPermission(): NotificationPermission {
     if (!('Notification' in window)) {
         return 'denied';

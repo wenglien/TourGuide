@@ -2,10 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { getMessaging } from 'firebase/messaging';
 
-// Your web app's Firebase configuration
-// For a production app, these should be in an .env file
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -16,14 +13,23 @@ const firebaseConfig = {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Initialize Firebase Cloud Messaging (only in browser)
-export const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
+// Firebase Cloud Messaging requires Service Worker support + HTTPS context.
+// Lazily initialise to avoid crashing in preview / sandboxed environments.
+export const getMessagingInstance = async () => {
+    try {
+        if (typeof window === 'undefined') return null;
+        if (!('serviceWorker' in navigator)) return null;
+        const { getMessaging } = await import('firebase/messaging');
+        return getMessaging(app);
+    } catch {
+        return null;
+    }
+};
 
 export default app;

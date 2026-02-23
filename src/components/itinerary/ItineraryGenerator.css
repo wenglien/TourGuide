@@ -324,6 +324,54 @@
     color: var(--text-secondary);
 }
 
+/* Loading State */
+.generator__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-5);
+    padding: var(--space-16) var(--space-6);
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--glass-bg-strong);
+    border-top-color: var(--accent-500);
+    border-right-color: var(--accent-400);
+    border-radius: 50%;
+    animation: generatorSpin 0.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    position: relative;
+}
+
+.loading-spinner::before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border: 2px solid transparent;
+    border-top-color: var(--accent-300);
+    border-radius: 50%;
+    animation: generatorSpin 1.3s linear infinite reverse;
+}
+
+@keyframes generatorSpin {
+    to { transform: rotate(360deg); }
+}
+
+.generator__loading p {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-medium);
+    animation: loadingPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
 /* Results Summary */
 .generator__summary {
     display: grid;
@@ -1412,7 +1460,18 @@
 
 /* Check-in Modal */
 .checkin-modal {
-    max-width: 360px;
+    max-width: 400px;
+    animation: modalSlideUp 0.3s var(--ease-out) forwards;
+}
+
+/* Progress step completed checkmark */
+.progress-step.completed .step-number::after {
+    content: '✓';
+    font-size: 12px;
+}
+
+.progress-step.completed .step-number {
+    font-size: 0;
 }
 
 .checkin-btn:hover {

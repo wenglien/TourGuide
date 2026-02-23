@@ -10,7 +10,7 @@ import ItineraryGenerator from './components/itinerary/ItineraryGenerator';
 import RoutePlanner from './components/route/RoutePlanner';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { loginWithGoogle, logout } from './services/authService';
-import { getUserItineraries, getUserActivities, deleteItinerary, logActivity, getUserCheckIns } from './services/dbService';
+import { getUserItineraries, getUserActivities, deleteItinerary, logActivity, getUserCheckIns, deleteCheckIn } from './services/dbService';
 import { PublicItinerary } from './pages/PublicItinerary';
 import SearchBar from './components/search/SearchBar';
 import { LanguageSwitcher } from './components/common/LanguageSwitcher';
@@ -56,14 +56,17 @@ const HomePage: React.FC = () => {
 
         <div className="hero__features container stagger-children">
           <div className="feature-card">
+            <span className="feature-card__icon">🎨</span>
             <h3>{t('home.feature1.title')}</h3>
             <p>{t('home.feature1.desc')}</p>
           </div>
           <div className="feature-card">
+            <span className="feature-card__icon">☀️</span>
             <h3>{t('home.feature2.title')}</h3>
             <p>{t('home.feature2.desc')}</p>
           </div>
           <div className="feature-card">
+            <span className="feature-card__icon">🗺️</span>
             <h3>{t('home.feature3.title')}</h3>
             <p>{t('home.feature3.desc')}</p>
           </div>
@@ -185,7 +188,8 @@ const ProfilePage: React.FC = () => {
   const [savedItineraries, setSavedItineraries] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
   const [checkIns, setCheckIns] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'itineraries' | 'checkins' | 'activity' | 'achievements'>('itineraries');
+  const [activeTab, setActiveTab] = useState<'itineraries' | 'diary' | 'activity' | 'achievements'>('itineraries');
+  const [diaryFullPhoto, setDiaryFullPhoto] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -240,6 +244,18 @@ const ProfilePage: React.FC = () => {
   const handleSearchSelect = (result: { id: string; type: string; data?: any }) => {
     if (result.data) {
       handleViewItinerary(result.data);
+    }
+  };
+
+  const handleDeleteCheckIn = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm(t('profile.checkin.delete.confirm'))) {
+      try {
+        await deleteCheckIn(id);
+        setCheckIns(prev => prev.filter((c: any) => c.id !== id));
+      } catch (error) {
+        alert(t('common.error'));
+      }
     }
   };
 
@@ -347,10 +363,10 @@ const ProfilePage: React.FC = () => {
             {t('profile.tab.itineraries')}
           </button>
           <button
-            className={`tab-btn ${activeTab === 'checkins' ? 'active' : ''}`}
-            onClick={() => setActiveTab('checkins')}
+            className={`tab-btn ${activeTab === 'diary' ? 'active' : ''}`}
+            onClick={() => setActiveTab('diary')}
           >
-            {t('profile.tab.checkins')}
+            {t('profile.tab.diary')}
           </button>
           <button
             className={`tab-btn ${activeTab === 'activity' ? 'active' : ''}`}
@@ -372,6 +388,7 @@ const ProfilePage: React.FC = () => {
             <section className="profile-section animate-slideUp">
               {savedItineraries.length === 0 ? (
                 <div className="empty-state-card">
+                  <span className="empty-state-icon">🗺️</span>
                   <p>{t('profile.empty.itineraries')}</p>
                   <button onClick={() => navigate('/generator')} className="btn btn-primary">{t('profile.empty.itineraries.cta')}</button>
                 </div>
@@ -430,30 +447,127 @@ const ProfilePage: React.FC = () => {
             </section>
           )}
 
-          {activeTab === 'checkins' && (
+          {activeTab === 'diary' && (
             <section className="profile-section animate-slideUp">
               {checkIns.length === 0 ? (
                 <div className="empty-state-card">
+                  <span className="empty-state-icon">📖</span>
                   <p>{t('profile.empty.checkins')}</p>
                   <p className="empty-hint">{t('profile.empty.checkins.hint')}</p>
                 </div>
               ) : (
-                <div className="checkins-grid">
-                  {checkIns.map(checkin => (
-                    <div key={checkin.id} className="checkin-card">
-                      <div className="checkin-header">
-                        <span className="checkin-place">{checkin.placeName}</span>
-                        <span className="checkin-rating">{checkin.rating || 5}/5</span>
-                      </div>
-                      <p className="checkin-address">{checkin.placeAddress}</p>
-                      {checkin.note && <p className="checkin-note">「{checkin.note}」</p>}
-                      <span className="checkin-time">
-                        {checkin.timestamp?.seconds
-                          ? new Date(checkin.timestamp.seconds * 1000).toLocaleDateString('zh-TW')
-                          : t('common.just.now')}
-                      </span>
+                <>
+                  {/* 統計橫幅 */}
+                  <div className="diary-stats-banner">
+                    <div className="diary-stat">
+                      <span className="diary-stat-value">{checkIns.length}</span>
+                      <span className="diary-stat-label">{t('profile.diary.totalCheckins')}</span>
                     </div>
-                  ))}
+                    <div className="diary-stat">
+                      <span className="diary-stat-value">
+                        {checkIns.filter((c: any) => c.photo).length}
+                      </span>
+                      <span className="diary-stat-label">{t('profile.diary.withPhotos')}</span>
+                    </div>
+                    <div className="diary-stat">
+                      <span className="diary-stat-value">
+                        {checkIns.length > 0
+                          ? (checkIns.reduce((sum: number, c: any) => sum + (c.rating || 5), 0) / checkIns.length).toFixed(1)
+                          : '—'}
+                      </span>
+                      <span className="diary-stat-label">{t('profile.diary.avgRating')}</span>
+                    </div>
+                  </div>
+
+                  {/* 時間軸 */}
+                  <div className="diary-timeline">
+                    {checkIns.map((checkin: any, idx: number) => {
+                      const date = checkin.timestamp?.seconds
+                        ? new Date(checkin.timestamp.seconds * 1000)
+                        : null;
+                      const prevDate = idx > 0 && checkIns[idx - 1].timestamp?.seconds
+                        ? new Date(checkIns[idx - 1].timestamp.seconds * 1000)
+                        : null;
+                      const showDateDivider = idx === 0 || (
+                        date && prevDate &&
+                        date.toDateString() !== prevDate.toDateString()
+                      );
+
+                      return (
+                        <React.Fragment key={checkin.id}>
+                          {showDateDivider && date && (
+                            <div className="diary-date-divider">
+                              <span>{date.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' })}</span>
+                            </div>
+                          )}
+                          <div className="diary-entry">
+                            <div className="diary-timeline-dot"></div>
+                            <div className="diary-card">
+                              {/* 照片區塊 */}
+                              {checkin.photo && (
+                                <div
+                                  className="diary-photo-wrap"
+                                  onClick={() => setDiaryFullPhoto(checkin.photo)}
+                                  title={t('profile.diary.viewPhoto')}
+                                >
+                                  <img
+                                    src={checkin.photo}
+                                    alt={checkin.placeName}
+                                    className="diary-photo"
+                                    loading="lazy"
+                                  />
+                                  <div className="diary-photo-overlay">
+                                    <span>{t('profile.diary.viewPhoto')}</span>
+                                  </div>
+                                </div>
+                              )}
+
+                              <div className="diary-card-body">
+                                <div className="diary-card-header">
+                                  <div>
+                                    <h4 className="diary-place-name">{checkin.placeName}</h4>
+                                    {checkin.placeAddress && (
+                                      <p className="diary-place-address">{checkin.placeAddress}</p>
+                                    )}
+                                  </div>
+                                  <div className="diary-card-meta">
+                                    <span className="diary-rating">
+                                      {'★'.repeat(checkin.rating || 5)}{'☆'.repeat(5 - (checkin.rating || 5))}
+                                    </span>
+                                    <button
+                                      className="diary-delete-btn"
+                                      onClick={(e) => handleDeleteCheckIn(checkin.id, e)}
+                                      title={t('common.delete')}
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {checkin.note && (
+                                  <p className="diary-note">「{checkin.note}」</p>
+                                )}
+
+                                <span className="diary-time">
+                                  {date
+                                    ? date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })
+                                    : t('common.just.now')}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {/* 全螢幕照片 Lightbox */}
+              {diaryFullPhoto && (
+                <div className="diary-lightbox" onClick={() => setDiaryFullPhoto(null)}>
+                  <button className="diary-lightbox-close" onClick={() => setDiaryFullPhoto(null)}>✕</button>
+                  <img src={diaryFullPhoto} alt="full" className="diary-lightbox-img" />
                 </div>
               )}
             </section>
@@ -463,6 +577,7 @@ const ProfilePage: React.FC = () => {
             <section className="profile-section animate-slideUp">
               {activities.length === 0 ? (
                 <div className="empty-state-card">
+                  <span className="empty-state-icon">📋</span>
                   <p>{t('profile.empty.activity')}</p>
                 </div>
               ) : (
@@ -486,22 +601,44 @@ const ProfilePage: React.FC = () => {
           {activeTab === 'achievements' && (
             <section className="profile-section animate-slideUp">
               <div className="achievements-grid">
-                <div className="achievement-card earned">
-                  <h4>{t('achievement.firstPlan')}</h4>
-                  <p>{t('achievement.firstPlan.desc')}</p>
-                </div>
-                <div className={`achievement-card ${activities.some(a => a.type === 'view') ? 'earned' : 'locked'}`}>
-                  <h4>{t('achievement.photographer')}</h4>
-                  <p>{t('achievement.photographer.desc')}</p>
-                </div>
-                <div className={`achievement-card ${totalItineraries >= 5 ? 'earned' : 'locked'}`}>
-                  <h4>{t('achievement.planner')}</h4>
-                  <p>{t('achievement.planner.desc')}</p>
-                </div>
-                <div className={`achievement-card ${uniqueCities >= 3 ? 'earned' : 'locked'}`}>
-                  <h4>{t('achievement.traveler')}</h4>
-                  <p>{t('achievement.traveler.desc')}</p>
-                </div>
+                {([
+                  {
+                    icon: '🚀', earned: true,
+                    title: t('achievement.firstPlan'), desc: t('achievement.firstPlan.desc')
+                  },
+                  {
+                    icon: '📸', earned: checkIns.some((c: any) => c.photo),
+                    title: t('achievement.photographer'), desc: t('achievement.photographer.desc')
+                  },
+                  {
+                    icon: '📅', earned: totalItineraries >= 5,
+                    title: t('achievement.planner'), desc: t('achievement.planner.desc'),
+                    progress: totalItineraries < 5 ? `${totalItineraries}/5` : undefined
+                  },
+                  {
+                    icon: '🌍', earned: uniqueCities >= 3,
+                    title: t('achievement.traveler'), desc: t('achievement.traveler.desc'),
+                    progress: uniqueCities < 3 ? `${uniqueCities}/3` : undefined
+                  },
+                  {
+                    icon: '⭐', earned: checkIns.length >= 10,
+                    title: t('achievement.explorer'), desc: t('achievement.explorer.desc'),
+                    progress: checkIns.length < 10 ? `${checkIns.length}/10` : undefined
+                  },
+                  {
+                    icon: '💡', earned: activities.some((a: any) => a.type === 'generate' && a.message?.includes('7')),
+                    title: t('achievement.weekPlanner'), desc: t('achievement.weekPlanner.desc')
+                  },
+                ] as Array<{icon: string; earned: boolean; title: string; desc: string; progress?: string}>).map((a, i) => (
+                  <div key={i} className={`achievement-card ${a.earned ? 'earned' : 'locked'}`}>
+                    <span className="achievement-icon">{a.earned ? a.icon : '🔒'}</span>
+                    <h4>{a.title}</h4>
+                    <p>{a.desc}</p>
+                    <span className="achievement-badge">
+                      {a.earned ? '✓ 已解鎖' : a.progress ? `進度 ${a.progress}` : '未解鎖'}
+                    </span>
+                  </div>
+                ))}
               </div>
             </section>
           )}

@@ -153,6 +153,15 @@ export const getUserCheckIns = async (userId: string) => {
     }
 };
 
+export const deleteCheckIn = async (checkInId: string) => {
+    try {
+        await deleteDoc(doc(db, 'check_ins', checkInId));
+    } catch (error) {
+        console.error('Error deleting check-in:', error);
+        throw error;
+    }
+};
+
 export const getItineraryCheckIns = async (itineraryId: string) => {
     try {
         const q = query(

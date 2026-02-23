@@ -650,23 +650,24 @@ export const ItineraryGenerator: React.FC = () => {
             setNotifications(prev => [notification, ...prev]);
         });
 
-        // Simulate a weather trigger after 5 seconds for demo
-        setTimeout(() => {
-            if (result && destinationLocation) {
-                service.simulateRain(result, preferences, destinationLocation, (newItinerary) => {
-                    setResult(newItinerary);
-                });
-            }
-        }, 5000);
-
-        // Check real-time crowd levels
         if (result && destinationLocation) {
+            // Check real weather via OpenWeatherMap API
+            const stopWeatherMonitoring = service.startWeatherMonitoring(
+                destinationLocation,
+                preferences.date,
+                result,
+                preferences,
+                (newItinerary) => setResult(newItinerary),
+                30
+            );
+
+            // Check real-time crowd levels
             service.checkCrowdLevels(result, preferences, destinationLocation, () => {
                 setResult({ ...result });
             });
 
-            // Start periodic monitoring (every 15 minutes)
-            const stopMonitoring = service.startCrowdMonitoring(
+            // Start periodic crowd monitoring (every 15 minutes)
+            const stopCrowdMonitoring = service.startCrowdMonitoring(
                 result,
                 preferences,
                 destinationLocation,
@@ -674,10 +675,10 @@ export const ItineraryGenerator: React.FC = () => {
                 15
             );
 
-            // Return cleanup function
             return () => {
                 unsubscribe();
-                stopMonitoring();
+                stopWeatherMonitoring();
+                stopCrowdMonitoring();
             };
         }
 

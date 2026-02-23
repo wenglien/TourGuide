@@ -1,8 +1,3 @@
-/* ==========================================
-   TourGuide - App Layout & Components
-   Minimal Theme
-   ========================================== */
-
 /* ========== App Container ========== */
 .app {
   min-height: 100vh;
@@ -379,6 +374,13 @@
 
 .feature-card:hover::before {
   opacity: 1;
+}
+
+.feature-card__icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: var(--space-3);
+  display: block;
 }
 
 .feature-card h3 {
@@ -850,7 +852,7 @@
 
 .tab-btn {
   flex: 1;
-  padding: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   border-radius: var(--radius-lg);
@@ -858,15 +860,19 @@
   transition: all var(--transition-fast);
   white-space: nowrap;
   min-width: max-content;
+  position: relative;
 }
 
 .tab-btn:hover {
   color: var(--text-secondary);
+  background: var(--glass-bg);
 }
 
 .tab-btn.active {
-  background: var(--glass-bg-strong);
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--accent-600) 0%, var(--accent-700) 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+  font-weight: var(--font-semibold);
 }
 
 .tab-content {
@@ -1107,6 +1113,10 @@
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .achievement-card::before {
@@ -1118,10 +1128,17 @@
   transition: opacity var(--transition-normal);
 }
 
+.achievement-icon {
+  font-size: 2rem;
+  line-height: 1;
+  position: relative;
+  margin-bottom: var(--space-1);
+}
+
 .achievement-card h4 {
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
-  margin-bottom: var(--space-1);
+  margin: 0;
   color: var(--text-primary);
   position: relative;
 }
@@ -1131,21 +1148,43 @@
   color: var(--text-tertiary);
   line-height: 1.4;
   position: relative;
+  margin: 0;
+}
+
+.achievement-badge {
+  margin-top: auto;
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  position: relative;
 }
 
 .achievement-card.locked {
-  opacity: 0.35;
-  filter: grayscale(0.5);
+  opacity: 0.38;
+  filter: grayscale(0.6);
+}
+
+.achievement-card.locked .achievement-badge {
+  background: var(--glass-bg-medium);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
 }
 
 .achievement-card.earned {
   border-color: var(--accent-500);
-  background: rgba(14, 165, 233, 0.1);
+  background: rgba(14, 165, 233, 0.08);
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1), var(--shadow-sm);
 }
 
 .achievement-card.earned::before {
   opacity: 1;
+}
+
+.achievement-card.earned .achievement-badge {
+  background: rgba(14, 165, 233, 0.15);
+  color: var(--accent-400);
+  border: 1px solid rgba(14, 165, 233, 0.3);
 }
 
 .achievement-card.earned:hover {
@@ -1206,18 +1245,293 @@
   color: var(--text-tertiary);
 }
 
+/* ========== Travel Diary ========== */
+.diary-stats-banner {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  background: var(--glass-bg-medium);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+}
+
+.diary-stat {
+  flex: 1;
+  text-align: center;
+}
+
+.diary-stat-value {
+  display: block;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--primary-400);
+  line-height: 1.2;
+}
+
+.diary-stat-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin-top: var(--space-1);
+}
+
+.diary-timeline {
+  position: relative;
+  padding-left: var(--space-8);
+}
+
+.diary-timeline::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--primary-500), transparent);
+  opacity: 0.3;
+}
+
+.diary-date-divider {
+  margin: var(--space-6) 0 var(--space-3) calc(-1 * var(--space-8));
+  padding-left: var(--space-3);
+}
+
+.diary-date-divider span {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.diary-entry {
+  position: relative;
+  margin-bottom: var(--space-4);
+}
+
+.diary-timeline-dot {
+  position: absolute;
+  left: calc(-1 * var(--space-8) + 6px);
+  top: var(--space-4);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.diary-card {
+  background: var(--glass-bg-medium);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.diary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.diary-photo-wrap {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  max-height: 220px;
+}
+
+.diary-photo {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.diary-photo-wrap:hover .diary-photo {
+  transform: scale(1.03);
+}
+
+.diary-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.diary-photo-wrap:hover .diary-photo-overlay {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.diary-photo-overlay span {
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.diary-photo-wrap:hover .diary-photo-overlay span {
+  opacity: 1;
+}
+
+.diary-card-body {
+  padding: var(--space-4);
+}
+
+.diary-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.diary-place-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1);
+}
+
+.diary-place-address {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.diary-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.diary-rating {
+  font-size: var(--text-sm);
+  color: var(--accent-400);
+  letter-spacing: -1px;
+}
+
+.diary-delete-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  padding: 0;
+}
+
+.diary-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.diary-note {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: var(--space-2) var(--space-3);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--primary-400);
+  margin: var(--space-2) 0;
+}
+
+.diary-time {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* Lightbox */
+.diary-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  cursor: pointer;
+}
+
+.diary-lightbox-img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+}
+
+.diary-lightbox-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: var(--text-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s;
+}
+
+.diary-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 /* Empty State */
 .empty-state-card {
   text-align: center;
-  padding: var(--space-10) var(--space-6);
+  padding: var(--space-12) var(--space-6);
   background: var(--glass-bg);
   border-radius: var(--radius-2xl);
   border: 1px dashed var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  line-height: 1;
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .empty-state-card p {
   color: var(--text-secondary);
-  margin-bottom: var(--space-4);
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+.empty-state-card .empty-hint {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  max-width: 280px;
 }
 
 .empty-hint {
