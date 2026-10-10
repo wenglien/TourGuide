@@ -14,7 +14,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-Hosting%20%2B%20Auth-18213D?style=flat-square&logo=firebase&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-installable-18213D?style=flat-square)
 
-**[Live demo](https://tourguide-53562.web.app)** &nbsp;·&nbsp; **[繁體中文](README.zh-TW.md)** &nbsp;·&nbsp; **[Design notes](DESIGN.md)**
+**[Live demo](https://tourguide-53562.web.app)** &nbsp;·&nbsp; **[繁體中文](docs/README.zh-TW.md)** &nbsp;·&nbsp; **[Design notes](docs/DESIGN.md)**
 
 </div>
 
@@ -108,7 +108,7 @@ Vite reads these at build time and they **end up in the browser bundle**. Read [
 | `npm run build` | Type-check and build to `dist/` |
 | `npm run preview` | Serve the production build locally |
 | `npm run lint` | ESLint |
-| `npm run deploy` | Build and deploy to Firebase Hosting (point `.firebaserc` at your own project first) |
+| `npm run deploy` | Build and deploy to Firebase Hosting (point `config/.firebaserc` at your own project first) |
 
 </details>
 
@@ -144,7 +144,7 @@ src/
   styles/       Design tokens and base styles
 ```
 
-Colour tokens, type and motion rules are in [DESIGN.md](DESIGN.md).
+Colour tokens, type and motion rules are in [DESIGN.md](docs/DESIGN.md).
 
 </details>
 
@@ -165,7 +165,7 @@ Found a vulnerability? Please open a private security advisory on GitHub rather 
 
 ## Contributing
 
-Issues and pull requests are welcome. Make sure `npm run build` passes (it type-checks) before opening a PR, and read [DESIGN.md](DESIGN.md) first if you are changing how something looks. `npm run lint` still reports older findings (mostly `any` types and hook dependency warnings); please don't add new ones, and cleaning them up is a good first contribution.
+Issues and pull requests are welcome. Make sure `npm run build` passes (it type-checks) before opening a PR, and read [DESIGN.md](docs/DESIGN.md) first if you are changing how something looks. `npm run lint` still reports older findings (mostly `any` types and hook dependency warnings); please don't add new ones, and cleaning them up is a good first contribution.
 
 <br>
 

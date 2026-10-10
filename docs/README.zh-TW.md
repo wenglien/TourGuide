@@ -1,20 +1,20 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-zh-dark.svg">
-  <img src="docs/assets/hero-zh-light.svg" alt="TourGuide：把一天，畫成一條線。" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/hero-zh-dark.svg">
+  <img src="assets/hero-zh-light.svg" alt="TourGuide：把一天，畫成一條線。" width="100%">
 </picture>
 
 <br>
 
 [![線上展示](https://img.shields.io/badge/%E7%B7%9A%E4%B8%8A%E5%B1%95%E7%A4%BA-open-0B8A7E?style=flat-square)](https://tourguide-53562.web.app)
-[![License: MIT](https://img.shields.io/badge/license-MIT-C98A00?style=flat-square)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-C98A00?style=flat-square)](../LICENSE)
 ![React 19](https://img.shields.io/badge/React-19-18213D?style=flat-square&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-18213D?style=flat-square&logo=typescript&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Hosting%20%2B%20Auth-18213D?style=flat-square&logo=firebase&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-installable-18213D?style=flat-square)
 
-**[線上展示](https://tourguide-53562.web.app)** &nbsp;·&nbsp; **[English](README.md)** &nbsp;·&nbsp; **[設計說明](DESIGN.md)**
+**[線上展示](https://tourguide-53562.web.app)** &nbsp;·&nbsp; **[English](../README.md)** &nbsp;·&nbsp; **[設計說明](DESIGN.md)**
 
 </div>
 
@@ -26,24 +26,24 @@
 
 <div align="center">
 <picture>
-  <img src="docs/assets/showcase-zh.png" alt="四個手機畫面：填寫表單、時間滑桿、每個時段一條路線的結果、同一天的地圖。" width="100%">
+  <img src="assets/showcase-zh.png" alt="四個手機畫面：填寫表單、時間滑桿、每個時段一條路線的結果、同一天的地圖。" width="100%">
 </picture>
 </div>
 
 <br>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-dark.svg"><img src="docs/assets/divider-light.svg" alt="" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg"><img src="assets/divider-light.svg" alt="" width="100%"></picture>
 
 ## 運作方式
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/how-zh-dark.svg">
-  <img src="docs/assets/how-zh-light.svg" alt="四個步驟：說要去哪、多久；找真實地點；挑選與排序；沿著路線走。" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/how-zh-dark.svg">
+  <img src="assets/how-zh-light.svg" alt="四個步驟：說要去哪、多久；找真實地點；挑選與排序；沿著路線走。" width="100%">
 </picture>
 
 「多久」決定模式。**2 小時或半天**會排出一條由模型直接寫出的散步路線；**1 到 7 天**會排出每日行程：候選地點來自 Google Places，模型只負責挑選和排序。散步路線的景點是模型寫的，出發前請自行確認。
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-dark.svg"><img src="docs/assets/divider-light.svg" alt="" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg"><img src="assets/divider-light.svg" alt="" width="100%"></picture>
 
 ## 功能
 
@@ -65,7 +65,7 @@
 </tr>
 </table>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-dark.svg"><img src="docs/assets/divider-light.svg" alt="" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg"><img src="assets/divider-light.svg" alt="" width="100%"></picture>
 
 ## 自己跑起來
 
@@ -108,7 +108,7 @@ Vite 在建置時讀取這些變數，它們**會被打包進瀏覽器端的程�
 | `npm run build` | 型別檢查並建置到 `dist/` |
 | `npm run preview` | 在本機預覽正式版 |
 | `npm run lint` | 執行 ESLint |
-| `npm run deploy` | 建置並部署到 Firebase Hosting（請先把 `.firebaserc` 改成你的專案） |
+| `npm run deploy` | 建置並部署到 Firebase Hosting（請先把 `config/.firebaserc` 改成你的專案） |
 
 </details>
 
@@ -148,7 +148,7 @@ src/
 
 </details>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-dark.svg"><img src="docs/assets/divider-light.svg" alt="" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg"><img src="assets/divider-light.svg" alt="" width="100%"></picture>
 
 ## 安全注意事項
 
@@ -169,7 +169,7 @@ TourGuide 是純前端應用，所有 `VITE_` 開頭的變數，任何訪客都�
 
 <br>
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-dark.svg"><img src="docs/assets/divider-light.svg" alt="" width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg"><img src="assets/divider-light.svg" alt="" width="100%"></picture>
 
 <div align="center">
 <sub>MIT 授權。為悠閒的日子而做。</sub>
