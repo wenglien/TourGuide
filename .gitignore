@@ -34,4 +34,4 @@ dist-ssr
 .claude/
 
 # Local screenshots from ad-hoc test scripts
-screenshots/
+/screenshots/
