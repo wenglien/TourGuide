@@ -391,3 +391,12 @@
 @media (min-width: 900px) {
   .result-toolbar--toggle-only { display: none; }
 }
+
+/* A grid column must be allowed to shrink below its content, or one long label widens the whole page. */
+.plan-result { grid-template-columns: minmax(0, 1fr); }
+.action-bar .btn { min-width: 0; padding: 0 var(--s-3); }
+.action-bar .btn:not(.action-bar__more) { flex: 1 1 0; }
+@media (max-width: 420px) {
+  .action-bar { gap: var(--s-1); }
+  .action-bar .btn { font-size: var(--t-xs); }
+}

@@ -243,3 +243,5 @@
   color: var(--ink-2);
 }
 .quick__place:hover { border-style: solid; border-color: var(--ink); color: var(--ink); }
+
+.trip { grid-template-columns: minmax(0, 1fr); }
