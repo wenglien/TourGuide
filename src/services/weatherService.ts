@@ -1,5 +1,12 @@
-const API_KEY = import.meta.env.VITE_OPENWEATHERMAP_API_KEY || 'bd5e378503939ddaee76f12ad7a97608';
+const API_KEY = import.meta.env.VITE_OPENWEATHERMAP_API_KEY as string | undefined;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
+
+/** Weather is optional: without VITE_OPENWEATHERMAP_API_KEY every call resolves to null. */
+const hasKey = () => {
+    if (API_KEY) return true;
+    console.warn('VITE_OPENWEATHERMAP_API_KEY is not set; skipping weather.');
+    return false;
+};
 
 export interface WeatherData {
     temp: number;
@@ -54,6 +61,7 @@ async function parseForecastResponse(data: any, date: string): Promise<WeatherDa
  * Get weather by city name for a specific date (supports 5-day forecast)
  */
 export async function getWeather(city: string, date: string): Promise<WeatherData | null> {
+    if (!hasKey()) return null;
     try {
         const response = await fetch(
             `${BASE_URL}/forecast?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric&lang=zh_tw`
@@ -80,6 +88,7 @@ export async function getWeather(city: string, date: string): Promise<WeatherDat
  * Get current weather by coordinates (lat/lng) — for companion mode live monitoring
  */
 export async function getCurrentWeatherByCoords(lat: number, lng: number): Promise<WeatherData | null> {
+    if (!hasKey()) return null;
     try {
         const response = await fetch(
             `${BASE_URL}/weather?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric&lang=zh_tw`
@@ -117,6 +126,7 @@ export async function getCurrentWeatherByCoords(lat: number, lng: number): Promi
  * Get weather forecast by coordinates for a specific date
  */
 export async function getWeatherByCoords(lat: number, lng: number, date: string): Promise<WeatherData | null> {
+    if (!hasKey()) return null;
     try {
         const response = await fetch(
             `${BASE_URL}/forecast?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric&lang=zh_tw`

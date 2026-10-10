@@ -3,7 +3,8 @@ import { getMessagingInstance } from './firebase';
 import { getToken, onMessage } from 'firebase/messaging';
 import { saveNotificationToken } from './dbService';
 
-const VAPID_KEY = 'TYpodGrXmOO5520lhyPnb-3RkZ3YVNCk_lAcGPXmjIk';
+// Web Push public key from Firebase Console → Project settings → Cloud Messaging.
+const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY as string | undefined;
 
 /**
  * Request notification permission and get FCM token
@@ -12,6 +13,11 @@ export async function requestNotificationPermission(userId: string): Promise<str
     try {
         if (!('Notification' in window)) {
             console.log('This browser does not support notifications');
+            return null;
+        }
+
+        if (!VAPID_KEY) {
+            console.log('VITE_FIREBASE_VAPID_KEY is not set; push notifications are disabled');
             return null;
         }
 
