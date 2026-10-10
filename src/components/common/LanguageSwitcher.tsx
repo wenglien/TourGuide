@@ -11,18 +11,20 @@ export const LanguageSwitcher: React.FC = () => {
     };
 
     return (
-        <div className="language-switcher">
+        <div className="language-switcher" role="group" aria-label="Language">
             <button
                 className={`lang-btn ${language === 'zh-TW' ? 'active' : ''}`}
                 onClick={() => handleLanguageChange('zh-TW')}
-                aria-label="Switch to Chinese"
+                aria-pressed={language === 'zh-TW'}
+                lang="zh-TW"
             >
                 中文
             </button>
             <button
                 className={`lang-btn ${language === 'en' ? 'active' : ''}`}
                 onClick={() => handleLanguageChange('en')}
-                aria-label="Switch to English"
+                aria-pressed={language === 'en'}
+                lang="en"
             >
                 EN
             </button>

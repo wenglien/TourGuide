@@ -1,6 +1,7 @@
 // Gemini AI API Service
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+import { GROQ_MODEL, GROQ_MODEL_OPTIONS } from './llm';
 
 
 export interface GeminiTrailRecommendation {
@@ -105,7 +106,8 @@ ${availablePlaces.map(p => `- ${p.name} (${p.type}) - 評分: ${p.rating || 'N/A
           'Authorization': `Bearer ${GROQ_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: GROQ_MODEL,
+          ...GROQ_MODEL_OPTIONS,
           messages: [
             {
               role: 'system',
@@ -118,7 +120,7 @@ ${availablePlaces.map(p => `- ${p.name} (${p.type}) - 評分: ${p.rating || 'N/A
           ],
           response_format: { type: "json_object" },
           temperature: 0.7,
-          max_tokens: 2048,
+          max_tokens: 4096,
         }),
       }
     );
@@ -206,7 +208,8 @@ ${places.map((p, i) => `${i + 1}. ${p.name} (${p.type}) - ${p.address}`).join('\
           'Authorization': `Bearer ${GROQ_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: GROQ_MODEL,
+          ...GROQ_MODEL_OPTIONS,
           messages: [
             {
               role: 'system',
@@ -219,7 +222,7 @@ ${places.map((p, i) => `${i + 1}. ${p.name} (${p.type}) - ${p.address}`).join('\
           ],
           response_format: { type: "json_object" },
           temperature: 0.7,
-          max_tokens: 2048,
+          max_tokens: 4096,
         }),
       }
     );
@@ -288,7 +291,8 @@ ${context?.previousPreferences ? `先前偏好：${context.previousPreferences.j
           'Authorization': `Bearer ${GROQ_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: GROQ_MODEL,
+          ...GROQ_MODEL_OPTIONS,
           messages: [
             {
               role: 'system',
@@ -300,7 +304,7 @@ ${context?.previousPreferences ? `先前偏好：${context.previousPreferences.j
             }
           ],
           temperature: 0.7,
-          max_tokens: 2048,
+          max_tokens: 4096,
         }),
       }
     );

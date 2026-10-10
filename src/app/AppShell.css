@@ -1,0 +1,89 @@
+.shell { min-height: 100dvh; }
+
+.skip-link {
+  position: absolute;
+  left: var(--s-3);
+  top: -60px;
+  z-index: 200;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-control);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 700;
+}
+.skip-link:focus { top: var(--s-3); }
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: saturate(1.2) blur(10px);
+  -webkit-backdrop-filter: saturate(1.2) blur(10px);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.topbar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  max-width: var(--content-max);
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 var(--s-4);
+}
+
+.topbar__brand { text-decoration: none; }
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-weight: 900;
+  font-size: var(--t-md);
+  letter-spacing: -0.01em;
+}
+
+.topbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-left: auto;
+}
+
+.topbar__login { min-height: 36px; }
+
+.account {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 40px;
+  padding: 2px;
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  text-decoration: none;
+}
+.account:hover { background: var(--surface-2); }
+.account.active { background: var(--surface-2); }
+.account__avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.account__label { display: none; padding-right: var(--s-3); }
+
+@media (min-width: 600px) {
+  .account__label { display: inline; }
+}
+
+/* narrow phones: keep brand, language and login on one line */
+.topbar__inner { gap: var(--s-2); }
+.topbar__brand { flex: none; }
+.topbar__end { min-width: 0; flex-shrink: 1; }
+.lang-btn, .topbar__login { white-space: nowrap; }
+@media (max-width: 380px) {
+  .wordmark { font-size: var(--t-base); }
+  .topbar__inner { padding: 0 var(--s-3); }
+  .topbar__login { padding: 0 var(--s-2); }
+  .lang-btn { min-width: 34px; }
+}

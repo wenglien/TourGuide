@@ -7,6 +7,7 @@ interface AddressAutocompleteProps {
     onChange: (address: string, location?: { lat: number; lng: number }) => void;
     placeholder?: string;
     className?: string;
+    inputId?: string;
 }
 
 declare global {
@@ -44,6 +45,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     onChange,
     placeholder,
     className = '',
+    inputId,
 }) => {
     const { t, language } = useLanguage();
     const defaultPlaceholder = t('generator.destination.placeholder');
@@ -52,6 +54,8 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     const [error, setError] = useState<string | null>(null);
     const [predictions, setPredictions] = useState<any[]>([]);
     const [showPredictions, setShowPredictions] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(-1);
+    const listId = `${inputId || 'address'}-options`;
 
     const autocompleteService = useRef<any>(null);
     const placesService = useRef<any>(null);
@@ -134,13 +138,15 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         });
     };
 
-    const handleSelectPrediction = (e: React.MouseEvent, prediction: any) => {
+    const handleSelectPrediction = (e: React.SyntheticEvent | null, prediction: any) => {
         // Prevent the event from bubbling up
-        e.preventDefault();
-        e.stopPropagation();
-        
+        e?.preventDefault();
+        e?.stopPropagation();
+        setActiveIndex(-1);
+
         // Update input with the main text or description
-        const address = prediction.description;
+        // Keep the short, recognisable name ("台北101", "大稻埕"), not the full postal address.
+        const address = prediction.structured_formatting?.main_text || prediction.description;
         onChange(address);
         setShowPredictions(false);
 
@@ -156,82 +162,86 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
                         lng: place.geometry.location.lng(),
                     };
                     // Update parent with full details
-                    onChange(place.formatted_address || place.name || address, location);
+                    onChange(address || place.name || place.formatted_address, location);
                 }
             });
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!showPredictions || predictions.length === 0) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveIndex((i) => (i + 1) % predictions.length);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveIndex((i) => (i <= 0 ? predictions.length - 1 : i - 1));
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            handleSelectPrediction(e, predictions[activeIndex]);
+        } else if (e.key === 'Escape') {
+            setShowPredictions(false);
         }
     };
 
     return (
         <div className={`address-autocomplete ${className}`} ref={containerRef}>
             <input
+                id={inputId}
                 type="text"
                 className="input address-autocomplete__input"
                 placeholder={finalPlaceholder}
                 value={value}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 onFocus={() => {
                     if (value.trim() && predictions.length > 0) {
                         setShowPredictions(true);
                     }
                 }}
-                disabled={false} // Always allow typing
+                role="combobox"
+                aria-expanded={showPredictions}
+                aria-controls={listId}
+                aria-autocomplete="list"
+                aria-activedescendant={activeIndex >= 0 ? `${listId}-${activeIndex}` : undefined}
+                autoComplete="off"
             />
 
-            {/* Custom Dropdown */}
             {showPredictions && (
                 <div className="address-autocomplete__dropdown">
-                    {predictions.length > 0 ? (
-                        predictions.map((prediction) => (
-                            <div
+                    <ul id={listId} role="listbox">
+                        {predictions.map((prediction, i) => (
+                            <li
+                                id={`${listId}-${i}`}
                                 key={prediction.place_id}
-                                className="address-autocomplete__item"
+                                role="option"
+                                aria-selected={i === activeIndex}
+                                className={`address-autocomplete__item ${i === activeIndex ? 'is-active' : ''}`}
                                 onMouseDown={(e) => handleSelectPrediction(e, prediction)}
+                                onMouseEnter={() => setActiveIndex(i)}
                             >
-
-                                <div className="address-autocomplete__text">
-                                    <span className="address-autocomplete__main-text">
-                                        {prediction.structured_formatting?.main_text || prediction.description}
-                                    </span>
-                                    <span className="address-autocomplete__secondary-text">
-                                        {prediction.structured_formatting?.secondary_text || ''}
-                                    </span>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="address-autocomplete__item" style={{ cursor: 'default', color: 'var(--text-tertiary)' }}>
-                            {t('map.noResults')}
-                        </div>
+                                <span className="address-autocomplete__main-text">
+                                    {prediction.structured_formatting?.main_text || prediction.description}
+                                </span>
+                                <span className="address-autocomplete__secondary-text">
+                                    {prediction.structured_formatting?.secondary_text || ''}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                    {predictions.length === 0 && (
+                        <p className="address-autocomplete__empty">{t('map.noResults')}</p>
                     )}
-                    <div className="address-autocomplete__item" style={{ cursor: 'default', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color-light)' }}>
+                    <div className="address-autocomplete__attribution">
                         <img
                             src="https://developers.google.com/maps/documentation/images/powered_by_google_on_white.png"
                             alt="Powered by Google"
-                            style={{ height: '14px' }}
                         />
                     </div>
                 </div>
             )}
 
-            {error && (
-                <div style={{
-                    marginTop: 'var(--space-2)',
-                    fontSize: 'var(--text-sm)',
-                    color: 'var(--error)',
-                }}>
-                    {error}
-                </div>
-            )}
-            {!isReady && !error && (
-                <div style={{
-                    marginTop: 'var(--space-2)',
-                    fontSize: 'var(--text-sm)',
-                    color: 'var(--text-tertiary)',
-                }}>
-                    {t('map.loading')}
-                </div>
-            )}
+            {error && <p className="address-autocomplete__status is-error">{error}</p>}
+            {!isReady && !error && <p className="address-autocomplete__status">{t('map.loading')}</p>}
         </div>
     );
 };

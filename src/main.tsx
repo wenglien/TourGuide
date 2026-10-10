@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+import App from './app/App'
 import { initLanguage } from './services/i18n'
 import { setupForegroundMessageHandler } from './services/notificationService'
 

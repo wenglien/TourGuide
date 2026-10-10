@@ -2,18 +2,36 @@
   "name": "tourguide",
   "private": true,
   "version": "0.0.0",
+  "description": "Turn a destination into a walkable, time-boxed itinerary drawn as a transit line.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenglien/TourGuide.git"
+  },
+  "homepage": "https://tourguide-53562.web.app",
+  "keywords": [
+    "travel",
+    "itinerary",
+    "react",
+    "vite",
+    "firebase",
+    "google-maps",
+    "pwa",
+    "llm"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && npx firebase deploy"
+    "deploy": "npm run build && npx firebase-tools deploy --only hosting"
   },
   "dependencies": {
     "firebase": "^12.7.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
+    "lucide-react": "^1.23.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^6.30.2",

@@ -3,6 +3,7 @@
 
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+import { GROQ_MODEL, GROQ_MODEL_OPTIONS } from './llm';
 
 export interface RoutePreferences {
     destination: string;
@@ -62,7 +63,8 @@ export async function generateRouteWithGemini(
                     'Authorization': `Bearer ${GROQ_API_KEY}`
                 },
                 body: JSON.stringify({
-                    model: 'llama-3.3-70b-versatile',
+                    model: GROQ_MODEL,
+                    ...GROQ_MODEL_OPTIONS,
                     messages: [
                         {
                             role: 'system',
@@ -75,7 +77,7 @@ export async function generateRouteWithGemini(
                     ],
                     response_format: { type: "json_object" },
                     temperature: 0.7,
-                    max_tokens: 2048,
+                    max_tokens: 4096,
                 }),
             }
         );
@@ -116,6 +118,8 @@ function buildRoutePrompt(preferences: RoutePreferences): string {
         nature: '自然景觀',
         nightlife: '夜生活',
         photography: '攝影景點',
+        walking: '散步步道、公園',
+        exhibition: '展覽、美術館',
     };
 
     const durationLabels: Record<string, string> = {

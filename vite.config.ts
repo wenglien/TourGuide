@@ -13,7 +13,8 @@ export default defineConfig({
         name: 'TourGuide - AI 智慧行程規劃',
         short_name: 'TourGuide',
         description: '策展式主題路線，帶你深入在地文化，發現旅行的無限可能',
-        theme_color: '#6366f1',
+        theme_color: '#F1F3EE',
+        background_color: '#F1F3EE',
         icons: [
           {
             src: 'icon-192.png',

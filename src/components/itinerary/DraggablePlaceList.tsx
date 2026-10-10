@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { ArrowDown, ArrowUp, GripVertical, X } from 'lucide-react';
 import { useLanguage } from '../../services/i18n';
 import './DraggablePlaceList.css';
 
@@ -132,92 +133,86 @@ export const DraggablePlaceList: React.FC<DraggablePlaceListProps> = ({
         setIsDraggingMobile(false);
     }, [touchedIndex, dragOverIndex, places, onReorder]);
 
-    return (
-        <div className="draggable-place-list">
-            <div className="draggable-place-list__header">
-                <span className="draggable-place-list__title">{t('generator.spots.title')}</span>
-                {editable && (
-                    <span className="draggable-place-list__hint">{t('generator.spots.dragHint')}</span>
-                )}
-            </div>
+    const move = (from: number, to: number) => {
+        if (to < 0 || to >= places.length) return;
+        const next = [...places];
+        const [item] = next.splice(from, 1);
+        next.splice(to, 0, item);
+        onReorder(next);
+    };
 
-            <div className="draggable-place-list__items">
+    return (
+        <div className="reorder">
+            {editable && <p className="subtle">{t('plan2.reorder.hint')}</p>}
+            <ol className="reorder__list">
                 {places.map((place, index) => (
-                    <div
+                    <li
                         key={place.place_id}
-                        className={`draggable-place-item ${draggedIndex === index || (touchedIndex === index && isDraggingMobile) ? 'is-dragging' : ''
-                            } ${dragOverIndex === index ? 'drag-over' : ''} ${!editable ? 'not-editable' : ''
-                            } ${isDraggingMobile ? 'mobile-dragging' : ''}`}
+                        className={`reorder__item ${draggedIndex === index || (touchedIndex === index && isDraggingMobile) ? 'is-dragging' : ''} ${dragOverIndex === index ? 'is-over' : ''}`}
                         draggable={editable}
                         onDragStart={(e) => editable && handleDragStart(e, index)}
                         onDragEnd={handleDragEnd}
                         onDragOver={(e) => handleDragOver(e, index)}
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, index)}
-                        onTouchStart={(e) => editable && handleTouchStart(e, index)}
-                        onTouchMove={handleTouchMove}
-                        onTouchEnd={handleTouchEnd}
                     >
-                        <div className="draggable-place-item__index">
-                            {index + 1}
-                        </div>
-
                         {editable && (
-                            <div className="draggable-place-item__handle">
-                                <span>☰</span>
-                            </div>
+                            <span
+                                className="reorder__handle"
+                                aria-hidden="true"
+                                onTouchStart={(e) => handleTouchStart(e, index)}
+                                onTouchMove={handleTouchMove}
+                                onTouchEnd={handleTouchEnd}
+                            >
+                                <GripVertical size={18} />
+                            </span>
                         )}
-
-                        <div className="draggable-place-item__content">
-                            <div className="draggable-place-item__name">{place.name}</div>
-                            {place.address && (
-                                <div className="draggable-place-item__address">{place.address}</div>
-                            )}
-                            <div className="draggable-place-item__meta">
-                                {place.rating && (
-                                    <span className="draggable-place-item__rating">
-                                        Rating {place.rating}
-                                    </span>
-                                )}
-                                {place.types?.slice(0, 2).map((type) => (
-                                    <span key={type} className="draggable-place-item__tag">
-                                        {type}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-
+                        <span className="reorder__index num">{index + 1}</span>
+                        <span className="reorder__name">
+                            <strong>{place.name}</strong>
+                            {place.address && <small>{place.address}</small>}
+                        </span>
                         {editable && (
-                            <div className="draggable-place-item__actions">
+                            <span className="reorder__actions">
+                                <button
+                                    type="button"
+                                    className="icon-btn"
+                                    onClick={() => move(index, index - 1)}
+                                    disabled={index === 0}
+                                    aria-label={t('plan2.reorder.up', { name: place.name })}
+                                >
+                                    <ArrowUp size={16} aria-hidden="true" />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="icon-btn"
+                                    onClick={() => move(index, index + 1)}
+                                    disabled={index === places.length - 1}
+                                    aria-label={t('plan2.reorder.down', { name: place.name })}
+                                >
+                                    <ArrowDown size={16} aria-hidden="true" />
+                                </button>
                                 {onEdit && (
-                                    <button
-                                        className="draggable-place-item__btn edit"
-                                        onClick={() => onEdit(place)}
-                                        title={t('common.edit')}
-                                    >
-                                        Edit
+                                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => onEdit(place)}>
+                                        {t('common.edit')}
                                     </button>
                                 )}
                                 {onRemove && (
                                     <button
-                                        className="draggable-place-item__btn remove"
+                                        type="button"
+                                        className="icon-btn"
                                         onClick={() => onRemove(place.place_id)}
-                                        title={t('common.remove')}
+                                        aria-label={t('plan2.reorder.remove', { name: place.name })}
                                     >
-                                        Delete
+                                        <X size={16} aria-hidden="true" />
                                     </button>
                                 )}
-                            </div>
+                            </span>
                         )}
-                    </div>
+                    </li>
                 ))}
-            </div>
-
-            {places.length === 0 && (
-                <div className="draggable-place-list__empty">
-                    <p>{t('generator.spots.empty')}</p>
-                </div>
-            )}
+            </ol>
+            {places.length === 0 && <p className="subtle">{t('generator.spots.empty')}</p>}
         </div>
     );
 };

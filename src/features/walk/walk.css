@@ -1,0 +1,33 @@
+.walk-start {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--t-sm);
+  font-weight: 700;
+}
+.walk-start .input { width: auto; min-height: 40px; padding: var(--s-1) var(--s-3); }
+
+.walk-tip {
+  margin-top: var(--s-1);
+  padding-left: var(--s-3);
+  border-left: 3px solid var(--line, var(--rule));
+  color: var(--ink-2);
+}
+
+.walk-notes {
+  display: grid;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+.walk-notes ul {
+  display: grid;
+  gap: var(--s-2);
+  max-width: 40em;
+  padding-left: var(--s-4);
+  list-style: disc;
+  color: var(--ink-2);
+  font-size: var(--t-sm);
+}
+.walk-notes li strong { color: var(--ink); margin-right: var(--s-2); }

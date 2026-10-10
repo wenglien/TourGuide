@@ -1,0 +1,120 @@
+/* TourGuide tokens — see DESIGN.md */
+:root {
+  color-scheme: light;
+
+  --paper: #F1F3EE;
+  --surface: #FFFFFF;
+  --surface-2: #E8EBE4;
+  --ink: #18213D;
+  --ink-2: #4E5770;
+  --ink-3: #7A8197;
+  --rule: #D3D8CF;
+  --rule-strong: #B7BEB2;
+  --stamp: #5B3CC4;
+  --stamp-wash: rgba(91, 60, 196, 0.1);
+  --on-ink: #F1F3EE;
+
+  --line-morning: #0B8A7E;
+  --line-afternoon: #C98A00;
+  --line-evening: #CC3F67;
+  --line-night: #3A47B5;
+
+  --ok: #1F7A4D;
+  --warn: #A3620A;
+  --danger: #B3263E;
+  --danger-wash: rgba(179, 38, 62, 0.08);
+
+  --font-sans: 'Overpass', 'Noto Sans TC', 'PingFang TC', 'Heiti TC', system-ui, sans-serif;
+  --font-stamp: 'Noto Serif TC', 'Songti TC', serif;
+
+  /* 1.25 modular scale */
+  --t-xs: 0.8125rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-md: 1.25rem;
+  --t-lg: 1.5625rem;
+  --t-xl: 1.9375rem;
+  --t-2xl: 2.4375rem;
+  --t-3xl: 3.0625rem;
+
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+
+  /* radius encodes hierarchy: controls small, sheets large, stations round */
+  --r-control: 10px;
+  --r-panel: 18px;
+  --r-sheet: 24px;
+
+  --shadow-sheet: 0 -12px 40px rgba(24, 33, 61, 0.16);
+  --shadow-pop: 0 12px 32px rgba(24, 33, 61, 0.14);
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --content-max: 1120px;
+  --tabbar-h: 0px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #121628;
+    --surface: #1A2038;
+    --surface-2: #232A46;
+    --ink: #E7EAF3;
+    --ink-2: #A9B0C6;
+    --ink-3: #7E86A0;
+    --rule: #2D3553;
+    --rule-strong: #414A6B;
+    --stamp: #A691FF;
+    --stamp-wash: rgba(166, 145, 255, 0.14);
+    --on-ink: #121628;
+    --line-morning: #3CC7B8;
+    --line-afternoon: #F0B429;
+    --line-evening: #F07A9A;
+    --line-night: #8C97FF;
+    --ok: #5BC98D;
+    --warn: #F0B429;
+    --danger: #FF7A8E;
+    --danger-wash: rgba(255, 122, 142, 0.12);
+    --shadow-sheet: 0 -12px 40px rgba(0, 0, 0, 0.5);
+    --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #121628;
+  --surface: #1A2038;
+  --surface-2: #232A46;
+  --ink: #E7EAF3;
+  --ink-2: #A9B0C6;
+  --ink-3: #7E86A0;
+  --rule: #2D3553;
+  --rule-strong: #414A6B;
+  --stamp: #A691FF;
+  --stamp-wash: rgba(166, 145, 255, 0.14);
+  --on-ink: #121628;
+  --line-morning: #3CC7B8;
+  --line-afternoon: #F0B429;
+  --line-evening: #F07A9A;
+  --line-night: #8C97FF;
+  --ok: #5BC98D;
+  --warn: #F0B429;
+  --danger: #FF7A8E;
+  --danger-wash: rgba(255, 122, 142, 0.12);
+  --shadow-sheet: 0 -12px 40px rgba(0, 0, 0, 0.5);
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* slot → line colour, usable anywhere via data-slot */
+[data-slot="morning"] { --line: var(--line-morning); }
+[data-slot="afternoon"] { --line: var(--line-afternoon); }
+[data-slot="evening"] { --line: var(--line-evening); }
+[data-slot="night"] { --line: var(--line-night); }

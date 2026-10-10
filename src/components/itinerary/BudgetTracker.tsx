@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../services/i18n';
 import './BudgetTracker.css';
 import { useAuth } from '../../context/AuthContext';
+import { useFeedback } from '../../ui/feedbackContext';
 import { calculateBudgetStatus, addExpense, getUserExpenses, type Expense } from '../../services/budgetTracker';
 
 interface BudgetTrackerProps {
@@ -15,6 +16,7 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
 }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
+    const { toast } = useFeedback();
     const [budgetStatus, setBudgetStatus] = useState<any>(null);
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -67,38 +69,80 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
             loadBudgetData();
         } catch (error) {
             console.error('Failed to add expense:', error);
-            alert(t('budget.error.add'));
+            toast(t('budget.error.add'), 'error');
         }
     };
 
     if (isLoading || !budgetStatus) {
-        return (
-            <div className="budget-tracker">
-                <div className="budget-tracker__loading">{t('common.loading')}</div>
-            </div>
-        );
+        return <div className="budget"><p className="subtle">{t('common.loading')}</p></div>;
     }
 
     const avgBudget = (estimatedBudget.min + estimatedBudget.max) / 2;
     const percentageUsed = avgBudget > 0 ? (budgetStatus.actualSpent / avgBudget) * 100 : 0;
+    const over = budgetStatus.status === 'over_budget' || budgetStatus.status === 'exceeded';
+    const statusLabel = budgetStatus.status === 'under_budget' ? t('budget.status.sufficient')
+        : budgetStatus.status === 'within_budget' ? t('budget.status.normal')
+            : budgetStatus.status === 'over_budget' ? t('budget.status.over') : t('budget.status.exceeded');
 
     return (
-        <div className="budget-tracker">
-            <div className="budget-tracker__header">
-                <h3 className="budget-tracker__title">{t('budget.title')}</h3>
-                <button
-                    className="btn btn-sm btn-primary"
-                    onClick={() => setShowAddExpense(!showAddExpense)}
+        <div className="budget">
+            <dl className="budget__figures">
+                <div>
+                    <dt>{t('budget.estimated')}</dt>
+                    <dd className="num">NT$ {estimatedBudget.min.toLocaleString()}–{estimatedBudget.max.toLocaleString()}</dd>
+                </div>
+                <div>
+                    <dt>{t('budget.actual')}</dt>
+                    <dd className={`num ${over ? 'is-over' : ''}`}>NT$ {budgetStatus.actualSpent.toLocaleString()}</dd>
+                </div>
+                <div>
+                    <dt>{t('budget.remaining')}</dt>
+                    <dd className="num">NT$ {budgetStatus.remainingBudget.min.toLocaleString()}–{budgetStatus.remainingBudget.max.toLocaleString()}</dd>
+                </div>
+            </dl>
+
+            <div className="budget__meter">
+                <div
+                    className="budget__bar"
+                    role="meter"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(Math.min(100, percentageUsed))}
+                    aria-label={t('budget.used', { n: percentageUsed.toFixed(0) })}
                 >
-                    {showAddExpense ? t('budget.cancel') : t('budget.add')}
-                </button>
+                    <span className={over ? 'is-over' : ''} style={{ width: `${Math.min(100, percentageUsed)}%` }} />
+                </div>
+                <p className="subtle">{t('budget.used', { n: percentageUsed.toFixed(0) })}，{statusLabel}</p>
             </div>
 
-            {showAddExpense && (
-                <div className="budget-tracker__add-form">
-                    <div className="form-group">
-                        <label>{t('budget.type')}</label>
+            {Object.values(budgetStatus.breakdown).some((v: any) => v > 0) && (
+                <ul className="budget__breakdown">
+                    {Object.entries(budgetStatus.breakdown).map(([type, amount]: [string, any]) => (
+                        amount > 0 && (
+                            <li key={type}>
+                                <span>{t(`budget.category.${type}`)}</span>
+                                <span className="num">NT$ {amount.toLocaleString()}</span>
+                            </li>
+                        )
+                    ))}
+                </ul>
+            )}
+
+            {budgetStatus.recommendations.length > 0 && (
+                <ul className="budget__tips">
+                    {budgetStatus.recommendations.map((rec: string, i: number) => <li key={i}>{rec}</li>)}
+                </ul>
+            )}
+
+            {showAddExpense ? (
+                <form
+                    className="budget__form"
+                    onSubmit={(e) => { e.preventDefault(); handleAddExpense(); }}
+                >
+                    <label className="field">
+                        <span className="field__label">{t('budget.type')}</span>
                         <select
+                            className="input"
                             value={newExpense.type}
                             onChange={(e) => setNewExpense(prev => ({ ...prev, type: e.target.value as Expense['type'] }))}
                         >
@@ -108,121 +152,56 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
                             <option value="shopping">{t('budget.category.shopping')}</option>
                             <option value="other">{t('budget.category.other')}</option>
                         </select>
-                    </div>
-                    <div className="form-group">
-                        <label>{t('budget.amount', { currency: 'NT$' })}</label>
+                    </label>
+                    <label className="field">
+                        <span className="field__label">{t('budget.amount', { currency: 'NT$' })}</span>
                         <input
+                            className="input num"
                             type="number"
+                            inputMode="numeric"
                             value={newExpense.amount || ''}
                             onChange={(e) => setNewExpense(prev => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))}
                             min="0"
                             step="1"
                         />
-                    </div>
-                    <div className="form-group">
-                        <label>{t('budget.description')}</label>
+                    </label>
+                    <label className="field budget__form-wide">
+                        <span className="field__label">{t('budget.description')}</span>
                         <input
+                            className="input"
                             type="text"
                             value={newExpense.description}
                             onChange={(e) => setNewExpense(prev => ({ ...prev, description: e.target.value }))}
                             placeholder={t('budget.placeholder')}
                         />
+                    </label>
+                    <div className="budget__form-actions budget__form-wide">
+                        <button type="button" className="btn btn-ghost" onClick={() => setShowAddExpense(false)}>{t('budget.cancel')}</button>
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={newExpense.amount <= 0 || !newExpense.description.trim()}
+                        >
+                            {t('budget.submit')}
+                        </button>
                     </div>
-                    <button
-                        className="btn btn-primary"
-                        onClick={handleAddExpense}
-                        disabled={newExpense.amount <= 0 || !newExpense.description.trim()}
-                    >
-                        {t('budget.submit')}
-                    </button>
-                </div>
-            )}
-
-            <div className="budget-tracker__summary">
-                <div className="budget-summary__item">
-                    <span className="budget-summary__label">{t('budget.estimated')}</span>
-                    <span className="budget-summary__value">
-                        NT$ {estimatedBudget.min.toLocaleString()} - {estimatedBudget.max.toLocaleString()}
-                    </span>
-                </div>
-                <div className="budget-summary__item">
-                    <span className="budget-summary__label">{t('budget.actual')}</span>
-                    <span className={`budget-summary__value ${budgetStatus.status === 'over_budget' || budgetStatus.status === 'exceeded' ? 'over-budget' : ''}`}>
-                        NT$ {budgetStatus.actualSpent.toLocaleString()}
-                    </span>
-                </div>
-                <div className="budget-summary__item">
-                    <span className="budget-summary__label">{t('budget.remaining')}</span>
-                    <span className="budget-summary__value">
-                        NT$ {budgetStatus.remainingBudget.min.toLocaleString()} - {budgetStatus.remainingBudget.max.toLocaleString()}
-                    </span>
-                </div>
-            </div>
-
-            <div className="budget-tracker__progress">
-                <div className="budget-progress__bar">
-                    <div
-                        className={`budget-progress__fill ${budgetStatus.status}`}
-                        style={{ width: `${Math.min(100, percentageUsed)}%` }}
-                    />
-                </div>
-                <div className="budget-progress__text">
-                    <span>{t('budget.used', { n: percentageUsed.toFixed(1) })}</span>
-                    <span className={`budget-status-badge ${budgetStatus.status}`}>
-                        {budgetStatus.status === 'under_budget' ? t('budget.status.sufficient') :
-                            budgetStatus.status === 'within_budget' ? t('budget.status.normal') :
-                                budgetStatus.status === 'over_budget' ? t('budget.status.over') : t('budget.status.exceeded')}
-                    </span>
-                </div>
-            </div>
-
-            <div className="budget-tracker__breakdown">
-                <h4>{t('budget.breakdown')}</h4>
-                <div className="breakdown-list">
-                    {Object.entries(budgetStatus.breakdown).map(([type, amount]: [string, any]) => (
-                        amount > 0 && (
-                            <div key={type} className="breakdown-item">
-                                <span className="breakdown-label">
-                                    {t(`budget.category.${type}`)}
-                                </span>
-                                <span className="breakdown-amount">NT$ {amount.toLocaleString()}</span>
-                            </div>
-                        )
-                    ))}
-                </div>
-            </div>
-
-            {budgetStatus.recommendations.length > 0 && (
-                <div className="budget-tracker__recommendations">
-                    <h4>{t('budget.recommendations')}</h4>
-                    <ul>
-                        {budgetStatus.recommendations.map((rec: string, i: number) => (
-                            <li key={i}>{rec}</li>
-                        ))}
-                    </ul>
-                </div>
+                </form>
+            ) : (
+                <button className="btn btn-secondary btn-sm" onClick={() => setShowAddExpense(true)}>{t('budget.add')}</button>
             )}
 
             {expenses.length > 0 && (
-                <div className="budget-tracker__expenses">
-                    <h4>{t('budget.history')}</h4>
-                    <div className="expenses-list">
-                        {expenses.map(expense => (
-                            <div key={expense.id} className="expense-item">
-                                <div className="expense-item__info">
-                                    <span className="expense-item__type">
-                                        {expense.type === 'transport' ? 'Transport' :
-                                            expense.type === 'food' ? 'Food' :
-                                                expense.type === 'activity' ? 'Activity' :
-                                                    expense.type === 'shopping' ? 'Shopping' : 'Other'}
-                                    </span>
-                                    <span className="expense-item__description">{expense.description}</span>
-                                </div>
-                                <span className="expense-item__amount">NT$ {expense.amount.toLocaleString()}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <ul className="budget__expenses">
+                    {expenses.map(expense => (
+                        <li key={expense.id}>
+                            <span>
+                                <strong>{expense.description}</strong>
+                                <small>{t(`budget.category.${expense.type}`)}</small>
+                            </span>
+                            <span className="num">NT$ {expense.amount.toLocaleString()}</span>
+                        </li>
+                    ))}
+                </ul>
             )}
         </div>
     );

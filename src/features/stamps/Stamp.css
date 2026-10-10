@@ -1,0 +1,25 @@
+.stamp {
+  display: block;
+  flex: none;
+  overflow: visible;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .stamp { mix-blend-mode: screen; }
+}
+:root[data-theme="dark"] .stamp { mix-blend-mode: screen; }
+
+.stamp__name {
+  font-family: var(--font-stamp);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.stamp__caption {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
