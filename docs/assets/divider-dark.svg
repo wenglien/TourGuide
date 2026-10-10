@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="28" viewBox="0 0 1200 28" role="presentation" aria-hidden="true" font-family="'TGO','TGN','Overpass','Noto Sans TC','PingFang TC','Microsoft JhengHei','Helvetica Neue',Arial,sans-serif">
+<defs>
+<linearGradient id="d0" gradientUnits="userSpaceOnUse" x1="60" x2="420" y1="0" y2="0"><stop offset="0" stop-color="#3CC7B8"/><stop offset="1" stop-color="#F0B429"/></linearGradient>
+<linearGradient id="d1" gradientUnits="userSpaceOnUse" x1="420" x2="780" y1="0" y2="0"><stop offset="0" stop-color="#F0B429"/><stop offset="1" stop-color="#F07A9A"/></linearGradient>
+<linearGradient id="d2" gradientUnits="userSpaceOnUse" x1="780" x2="1140" y1="0" y2="0"><stop offset="0" stop-color="#F07A9A"/><stop offset="1" stop-color="#8C97FF"/></linearGradient>
+</defs>
+<line x1="60" y1="14" x2="420" y2="14" stroke="url(#d0)" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+<line x1="420" y1="14" x2="780" y2="14" stroke="url(#d1)" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+<line x1="780" y1="14" x2="1140" y2="14" stroke="url(#d2)" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+<circle cx="60" cy="14" r="7" fill="#0D1117" stroke="#3CC7B8" stroke-width="4"/>
+<circle cx="420" cy="14" r="7" fill="#0D1117" stroke="#F0B429" stroke-width="4"/>
+<circle cx="780" cy="14" r="7" fill="#0D1117" stroke="#F07A9A" stroke-width="4"/>
+<circle cx="1140" cy="14" r="7" fill="#0D1117" stroke="#8C97FF" stroke-width="4"/>
+</svg>
