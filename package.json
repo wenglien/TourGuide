@@ -25,7 +25,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint -c config/eslint.config.js .",
     "preview": "vite preview",
-    "deploy": "npm run build && npx firebase-tools deploy --only hosting --config config/firebase.json"
+    "deploy": "tsc -b && vite build --outDir config/dist --emptyOutDir && npx firebase-tools deploy --only hosting --config config/firebase.json"
   },
   "dependencies": {
     "firebase": "^12.7.0",
