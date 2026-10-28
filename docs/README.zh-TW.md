@@ -2,32 +2,30 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/hero-zh-dark.svg">
-  <img src="assets/hero-zh-light.svg" alt="TourGuide：把一天，畫成一條線。" width="100%">
+  <img src="assets/hero-zh-light.svg" alt="TourGuide：把一天，畫成一個關卡。一條像素風的一天，停留點是？方塊，還有小旅人和終點旗。" width="100%">
 </picture>
 
 <br>
 
-[![線上展示](https://img.shields.io/badge/%E7%B7%9A%E4%B8%8A%E5%B1%95%E7%A4%BA-open-0B8A7E?style=flat-square)](https://tourguide-53562.web.app)
-[![License: MIT](https://img.shields.io/badge/license-MIT-C98A00?style=flat-square)](../LICENSE)
-![React 19](https://img.shields.io/badge/React-19-18213D?style=flat-square&logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-18213D?style=flat-square&logo=typescript&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-Hosting%20%2B%20Auth-18213D?style=flat-square&logo=firebase&logoColor=white)
-![PWA](https://img.shields.io/badge/PWA-installable-18213D?style=flat-square)
+[![線上展示](https://img.shields.io/badge/%E7%B7%9A%E4%B8%8A%E5%B1%95%E7%A4%BA-play-E52521?style=flat-square)](https://tourguide-53562.web.app)
+[![License: MIT](https://img.shields.io/badge/license-MIT-C88A00?style=flat-square)](../LICENSE)
+![React 19](https://img.shields.io/badge/React-19-10122B?style=flat-square&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-10122B?style=flat-square&logo=typescript&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-Hosting%20%2B%20Auth-10122B?style=flat-square&logo=firebase&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-installable-10122B?style=flat-square)
 
-**[線上展示](https://tourguide-53562.web.app)** &nbsp;·&nbsp; **[English](../README.md)** &nbsp;·&nbsp; **[設計說明](DESIGN.md)**
+**[線上展示](https://tourguide-53562.web.app)** &ensp;&ensp; **[English](../README.md)** &ensp;&ensp; **[設計說明](DESIGN.md)**
 
 </div>
 
 <br>
 
-多數行程規劃工具給你一份清單，TourGuide 給你一條**路線**。
+多數行程規劃工具給你一份清單，TourGuide 給你一個**關卡**。
 
-上午、下午、傍晚、晚上各有一種顏色，每個景點是一個車站，站與站之間標著步行或搭車要幾分鐘、多少錢。拖動那台小列車，下方的路線和地圖會跟著動，一眼就知道下午 2 點 20 分你會在哪裡。
+告訴它要去哪、待多久，它會把這一天排成一條橫向捲軸。上午、下午、傍晚、晚上各有一種顏色，每個停留點是一個？方塊，點與點之間標著步行要幾分鐘。拖動那個小旅人，下方的路線和地圖會跟著動，一眼就知道下午 2 點 20 分你會在哪裡。走過的方塊還會吐出一枚金幣。
 
 <div align="center">
-<picture>
-  <img src="assets/showcase-zh.png" alt="四個手機畫面：填寫表單、時間滑桿、每個時段一條路線的結果、同一天的地圖。" width="100%">
-</picture>
+  <img src="assets/showcase-zh.png" alt="四個手機畫面：白天模式的表單、白天模式的時間軸與路線、夜晚模式的時間軸、夜晚模式的表單。" width="100%">
 </div>
 
 <br>
@@ -38,10 +36,13 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/how-zh-dark.svg">
-  <img src="assets/how-zh-light.svg" alt="四個步驟：說要去哪、多久；找真實地點；挑選與排序；沿著路線走。" width="100%">
+  <img src="assets/how-zh-light.svg" alt="四個步驟：說去哪、待多久；找真實地點；挑選並排序；跟著關卡走。" width="100%">
 </picture>
 
-「多久」決定模式。**2 小時或半天**會排出一條由模型直接寫出的散步路線；**1 到 7 天**會排出每日行程：候選地點來自 Google Places，模型只負責挑選和排序。散步路線的景點是模型寫的，出發前請自行確認。
+「多久」決定模式：
+
+- **2 小時或半天**會排出一條散步路線，由模型直接寫出。這些景點沒有經過地點資料庫比對，出發前請自行確認。
+- **1 到 7 天**會排出每日行程。候選地點來自 Google Places，模型只負責挑選和排序。
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg"><img src="assets/divider-light.svg" alt="" width="100%"></picture>
 
@@ -50,20 +51,24 @@
 <table>
 <tr>
 <td width="33%" valign="top"><b>一張表單，所有行程</b><br>只要填地點和多久。興趣可以不選，不選就排綜合路線。</td>
-<td width="33%" valign="top"><b>可以拖動的一天</b><br>在整條軌道上任一處拖動、點某一站，或按播放。放開時靠近某站會自動吸附。鍵盤也能完整操作。</td>
+<td width="33%" valign="top"><b>可以拖動的一天</b><br>在時間軸任一處拖動、點某個？方塊走過去，或按播放。放開時靠近某站會自動吸附，鍵盤也能操作。</td>
 <td width="33%" valign="top"><b>快速開始</b><br>用目前位置，或點大稻埕、九份等熱門地點，一鍵填好目的地。</td>
 </tr>
 <tr>
 <td valign="top"><b>就地調整</b><br>換掉一個景點、重排一個時段或一整天、拖曳或用箭頭調整順序，或一鍵改成最短步行順序。</td>
 <td valign="top"><b>天氣與人潮</b><br>偵測當天是否下雨並提供室內版本；隨行模式會在外出時留意天氣與人潮。</td>
-<td valign="top"><b>紀念章</b><br>在景點留下心得和照片，蓋一個紀念章收進紀念章冊。</td>
+<td valign="top"><b>紀念章</b><br>在景點留下心得和照片。蓋過章的站會變成金幣，像素紀念章收進紀念章冊。</td>
 </tr>
 <tr>
-<td valign="top"><b>儲存與分享</b><br>存進帳號、產生公開分享連結、匯出 PDF 或 Google 日曆，並追蹤實際花費。</td>
-<td valign="top"><b>不登入也能用</b><br>生成、拖動時間、導航整天都不需要帳號。登入後才能儲存、分享和蓋章。</td>
-<td valign="top"><b>可安裝</b><br>PWA，支援繁體中文與英文，淺色與深色主題會跟著系統。</td>
+<td valign="top"><b>儲存與分享</b><br>存進帳號、產生公開分享連結、匯出 PDF 或 Google 日曆，並用金幣條追蹤實際花費。</td>
+<td valign="top"><b>不登入也能用</b><br>生成、拖動時間軸、導航整天都不需要帳號。登入後才能儲存、分享和蓋章。</td>
+<td valign="top"><b>可安裝</b><br>PWA，支援繁體中文與英文。淺色是白天關卡、深色是夜晚關卡，跟著系統切換。</td>
 </tr>
 </table>
+
+### 關於這個外觀
+
+像素只出現在物件上：？方塊、金幣、小旅人、缺角的方塊邊框、分格的進度條，還有每一頁底部的磚塊地面。文字則保持清晰，用 Chiron GoRound TC（圓體），時鐘和分數用 Bungee。所有動作都像 8-bit 遊戲一樣一格一格跳。系統開啟「減少動態效果」時，自己會動的東西都會停下來。完整規則記在 [DESIGN.md](DESIGN.md)。
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/divider-dark.svg"><img src="assets/divider-light.svg" alt="" width="100%"></picture>
 
@@ -109,6 +114,8 @@ Vite 在建置時讀取這些變數，它們**會被打包進瀏覽器端的程�
 | `npm run preview` | 在本機預覽正式版 |
 | `npm run lint` | 執行 ESLint |
 | `npm run deploy` | 建置並部署到 Firebase Hosting（請先把 `config/.firebaserc` 改成你的專案） |
+| `node tools/gen-pixel-sprites.mjs src/assets/pixel` | 從字元圖重新產生像素素材 |
+| `python3 tools/gen-readme-art.py <字型資料夾>` | 重新產生 README 的圖（需要 `fonttools`，以及腳本裡列出的字型檔） |
 
 </details>
 
@@ -120,6 +127,7 @@ Vite 在建置時讀取這些變數，它們**會被打包進瀏覽器端的程�
 | 項目 | 選擇 |
 | --- | --- |
 | 前端 | React 19、TypeScript、Vite、手寫 CSS 與設計 token |
+| 外觀 | 程式產生的 SVG 像素素材；Google Fonts 的 Chiron GoRound TC 與 Bungee |
 | 路由 | React Router 6 |
 | 後端 | Firebase：Auth（Google）、Firestore、Storage、Hosting |
 | 地圖與地點 | Google Maps JavaScript API |
@@ -129,22 +137,24 @@ Vite 在建置時讀取這些變數，它們**會被打包進瀏覽器端的程�
 
 ```
 src/
-  app/          App、頂部列、路由
+  app/          App、外框（天空、頂部列、地面）、路由
   features/
     trip/       唯一的主頁：表單、生成中、結果標頭
     plan/       多天行程結果與狀態（usePlanner）
     walk/       單次散步結果
-    route-line/ 路線圖 RouteLine 與時間滑桿 DayScrubber
-    stamps/     紀念章
-    trips/      「我的旅程」：行程、紀念章冊、動態
+    route-line/ 路線圖 RouteLine、時間軸關卡 DayScrubber、載入條
+    stamps/     像素紀念章
+    trips/      「我的旅程」：行程、紀念章冊、成就
     shared/     公開分享頁
-  components/   地圖、地址自動完成、預算追蹤、排序清單
+  components/   地圖、地址自動完成、預算金幣條、排序清單
   services/     Google Maps、LLM、Firebase、天氣、匯出、i18n
-  ui/           底部視窗、提示訊息與確認對話框、分段控制
-  styles/       設計 token 與基礎樣式
+  ui/           底部視窗、提示訊息、分段控制、金幣特效（PixelFx）
+  styles/       tokens.css、base.css、motion.css
+  assets/pixel/ 產生的素材：小旅人、金幣、？方塊、地面、旗子
+tools/          像素素材與 README 圖的產生腳本
 ```
 
-配色、字型與動態的設計決策記錄在 [DESIGN.md](DESIGN.md)。
+每個元件的動畫寫在它自己的 CSS 檔裡。配色、字型與動態規則記在 [DESIGN.md](DESIGN.md)。
 
 </details>
 
@@ -165,7 +175,7 @@ TourGuide 是純前端應用，所有 `VITE_` 開頭的變數，任何訪客都�
 
 ## 參與貢獻
 
-歡迎提 issue 和 pull request。送出前請確認 `npm run build` 能通過（會做型別檢查）；如果要改外觀，請先讀 [DESIGN.md](DESIGN.md)。`npm run lint` 目前還有一些舊的問題（主要是 `any` 型別和 hook 依賴警告），請不要新增，順手清掉也非常歡迎。
+歡迎提 issue 和 pull request。送出前請確認 `npm run build` 能通過（會做型別檢查）。如果要改外觀或動畫，請先讀 [DESIGN.md](DESIGN.md)：不用圓角、金幣黃只代表「已選取」、動畫一格一格跳且要放在 `prefers-reduced-motion` 判斷裡。`npm run lint` 目前還有一些舊的問題，主要是 `any` 型別和 hook 依賴警告。請不要新增，順手清掉也非常歡迎。
 
 <br>
 
