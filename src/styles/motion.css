@@ -1,0 +1,110 @@
+/* TourGuide motion — shared pieces of the 8-bit motion system (see docs/DESIGN.md).
+   Every component file owns its own motion inside `prefers-reduced-motion: no-preference`;
+   this file holds what several of them share: keyframes, particles, dropping letters,
+   and the scroll reveal. Everything moves in frames (steps()). */
+
+/* ---------- shared keyframes (inert until a component uses them) ---------- */
+@keyframes pop {
+  0% { transform: scale(0.86); }
+  60% { transform: scale(1.08); }
+  100% { transform: none; }
+}
+@keyframes hop {
+  50% { transform: translateY(-7px); }
+  100% { transform: translateY(-2px); }
+}
+@keyframes wiggle {
+  25% { translate: -2px 0; }
+  75% { translate: 2px 0; }
+}
+/* a breath for idle sprites; uses `translate` so it never fights a transform */
+@keyframes idle-bob { 50% { translate: 0 -1px; } }
+/* a coin turning on its axis, then resting */
+@keyframes coin-spin {
+  0% { transform: scaleX(1); }
+  8% { transform: scaleX(0.6); }
+  16% { transform: scaleX(0.15); }
+  24% { transform: scaleX(0.6); }
+  32%, 100% { transform: scaleX(1); }
+}
+/* a coin jumping out of a block */
+@keyframes coin-pop {
+  0% { transform: translateY(0) scaleX(1); opacity: 1; }
+  35% { transform: translateY(-26px) scaleX(0.25); }
+  65% { transform: translateY(-32px) scaleX(1); opacity: 1; }
+  100% { transform: translateY(-20px) scaleX(0.25); opacity: 0; }
+}
+
+/* ---------- particles, spawned by PixelFx ---------- */
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fx {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  background: center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+.fx--coin { background-image: url('../assets/pixel/coin.svg'); animation: fx-coin 700ms steps(8) forwards; }
+.fx--sparkle {
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  background-image: url('../assets/pixel/sparkle.svg');
+  animation: fx-sparkle 420ms steps(5) forwards;
+}
+@keyframes fx-coin {
+  40% { transform: translateY(-40px) scaleX(0.25); }
+  70% { transform: translateY(-48px) scaleX(1); opacity: 1; }
+  100% { transform: translateY(-36px) scaleX(0.25); opacity: 0; }
+}
+@keyframes fx-sparkle {
+  0% { transform: scale(0.4); }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
+}
+
+/* ---------- DropText: headline letters ---------- */
+.drop-char { display: inline-block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* letters drop in like bricks, and hop when you point at them */
+  .drop-char {
+    animation: char-drop 560ms steps(4) both;
+    animation-delay: calc(var(--i, 0) * 45ms + 120ms);
+    transition: translate 90ms steps(2);
+  }
+  .drop-char:hover { translate: 0 -6px; }
+  @keyframes char-drop {
+    0% { transform: translateY(-1.1em); opacity: 0; }
+    55% { transform: translateY(0.1em); opacity: 1; }
+    75% { transform: translateY(-0.06em); }
+    100% { transform: none; opacity: 1; }
+  }
+
+  /* lists wipe in from the left in six steps as you scroll to them */
+  @supports (animation-timeline: view()) {
+    .rl-row,
+    .trip-item,
+    .stamp-book__item,
+    .achievements li,
+    .activity li,
+    .budget__breakdown li,
+    .budget__expenses li,
+    .reorder__item {
+      animation: px-reveal steps(6) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    @keyframes px-reveal {
+      from { clip-path: inset(0 100% 0 0); }
+      /* negative inset so node rings and the traveller aren't clipped once revealed */
+      to { clip-path: inset(-30px); }
+    }
+  }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../../services/i18n';
 import { displayPlace } from '../../lib/itinerary';
+import { DropText } from '../../ui/DropText';
 
 interface ResultHeaderProps {
     title: string;
@@ -20,7 +21,7 @@ export const ResultHeader: React.FC<ResultHeaderProps> = ({ title, meta, facts, 
             <button type="button" className="rh__back" onClick={onEdit}>
                 <ArrowLeft size={18} aria-hidden="true" /> {t('trip.edit')}
             </button>
-            <h1 className="rh__title" title={title}>{displayPlace(title)}</h1>
+            <h1 className="rh__title" title={title}><DropText key={title} text={displayPlace(title)} /></h1>
             <p className="rh__meta">
                 {meta.filter(Boolean).map((m) => <span key={m as string}>{m}</span>)}
             </p>

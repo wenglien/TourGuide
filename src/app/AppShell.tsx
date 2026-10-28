@@ -5,16 +5,14 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../services/i18n';
 import { useLogin } from './useLogin';
 import { LanguageSwitcher } from '../components/common/LanguageSwitcher';
+import { PixelFx } from '../ui/PixelFx';
+import { useCoins } from '../ui/fxStore';
+import coinUrl from '../assets/pixel/coin.svg';
 import './AppShell.css';
 
 export const Wordmark: React.FC = () => (
     <span className="wordmark">
-        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-            <path d="M5 3v16" stroke="var(--line-morning)" strokeWidth="4" strokeLinecap="round" />
-            <path d="M5 11h12" stroke="var(--line-evening)" strokeWidth="4" strokeLinecap="round" />
-            <circle cx="5" cy="11" r="3.5" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2.5" />
-            <circle cx="17" cy="11" r="3.5" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2.5" />
-        </svg>
+        <img src={coinUrl} alt="" className="wordmark__coin" aria-hidden="true" />
         TourGuide
     </span>
 );
@@ -23,6 +21,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
     const { user, loading } = useAuth();
     const { t } = useLanguage();
     const login = useLogin();
+    const coins = useCoins();
 
     return (
         <div className="shell">
@@ -33,6 +32,12 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
                         <Wordmark />
                     </Link>
                     <div className="topbar__end">
+                        {coins > 0 && (
+                            // keyed on the count so each new coin replays the bump
+                            <span key={coins} className="coin-count" aria-hidden="true">
+                                <img src={coinUrl} alt="" />×<span className="num">{coins}</span>
+                            </span>
+                        )}
                         <LanguageSwitcher />
                         {loading ? null : user ? (
                             <NavLink to="/me" className="account" aria-label={t('shell.me')}>
@@ -51,6 +56,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             </header>
 
             <main id="main" className="shell__main">{children}</main>
+            <PixelFx />
         </div>
     );
 };

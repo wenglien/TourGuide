@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './motion.css';
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -10,6 +11,7 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
+  /* the sky art lives on .shell::before (motion.css) so it can drift */
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -20,7 +22,7 @@ body {
 }
 
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
-h1, h2, h3, h4 { line-height: 1.25; font-weight: 800; letter-spacing: 0; }
+h1, h2, h3, h4 { line-height: 1.2; font-weight: 900; letter-spacing: 0; }
 ul, ol { padding: 0; list-style: none; }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
@@ -29,9 +31,8 @@ button { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
 
 :focus-visible {
-  outline: 2px solid var(--stamp);
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline: var(--px) dashed var(--stamp);
+  outline-offset: 4px;
 }
 
 .num {
@@ -59,27 +60,13 @@ button:disabled { cursor: not-allowed; }
   .page { padding: var(--s-6) var(--s-6) var(--s-8); }
 }
 
-.page-title {
-  font-size: var(--t-xl);
-  font-weight: 900;
-  line-height: 1.2;
-}
-
-.page-lede {
-  margin-top: var(--s-2);
-  color: var(--ink-2);
-  max-width: 34em;
-}
-
-.section-heading {
-  font-size: var(--t-md);
-  font-weight: 800;
-}
+.page-title { font-size: var(--t-xl); }
+.section-heading { font-size: var(--t-md); }
 
 .muted { color: var(--ink-2); }
 .subtle { color: var(--ink-3); font-size: var(--t-sm); }
 
-/* ---------- buttons ---------- */
+/* ---------- buttons: blocks you press down ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -87,45 +74,56 @@ button:disabled { cursor: not-allowed; }
   gap: var(--s-2);
   min-height: 44px;
   padding: 0 var(--s-4);
-  border: 1px solid transparent;
-  border-radius: var(--r-control);
+  border: 0;
+  border-radius: 0;
   background: transparent;
   font-size: var(--t-sm);
   font-weight: 700;
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 120ms, border-color 120ms, color 120ms, transform 120ms;
+  transition: background-color 80ms, transform 60ms steps(2), translate 80ms steps(2);
 }
-.btn:active:not(:disabled) { transform: translateY(1px); }
 .btn:disabled { opacity: 0.45; }
 
-.btn-primary { background: var(--ink); color: var(--on-ink); }
-.btn-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 88%, var(--stamp)); }
+.btn-primary,
+.btn-secondary {
+  /* edge, bevel, then a thick bottom edge the block sinks into when pressed */
+  box-shadow: var(--pixel-edge), var(--pixel-bevel), 0 calc(var(--px) * 2) 0 var(--px) var(--edge);
+  margin-bottom: calc(var(--px) * 2);
+}
+.btn-primary:active:not(:disabled),
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(calc(var(--px) * 2));
+  box-shadow: var(--pixel-edge), inset 0 var(--px) 0 rgba(0, 0, 0, 0.22);
+}
 
-.btn-secondary { background: var(--surface); border-color: var(--rule-strong); color: var(--ink); }
-.btn-secondary:hover:not(:disabled) { border-color: var(--ink); }
+.btn-primary { position: relative; overflow: hidden; background: var(--stamp); color: var(--on-stamp); }
+.btn-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--stamp) 88%, #fff); }
+
+.btn-secondary { background: var(--surface); color: var(--ink); }
+.btn-secondary:hover:not(:disabled) { background: var(--coin); color: var(--on-coin); }
 
 .btn-ghost { color: var(--ink-2); padding: 0 var(--s-3); }
-.btn-ghost:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
+.btn-ghost:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); box-shadow: var(--pixel-edge); }
+.btn-ghost:active:not(:disabled) { transform: translateY(2px); }
 
 .btn-danger { color: var(--danger); }
 .btn-danger:hover:not(:disabled) { background: var(--danger-wash); }
 
 .btn-sm { min-height: 36px; padding: 0 var(--s-3); font-size: var(--t-xs); }
 .btn-lg { min-height: 52px; padding: 0 var(--s-5); font-size: var(--t-base); }
-.btn-block { width: 100%; }
 
 .icon-btn {
   display: inline-grid;
   place-items: center;
   width: 40px; height: 40px;
   border: 0;
-  border-radius: 50%;
+  border-radius: 0;
   background: transparent;
   color: var(--ink-2);
 }
-.icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+.icon-btn:hover { background: var(--surface-2); color: var(--ink); box-shadow: var(--pixel-edge); }
 
 /* ---------- form controls ---------- */
 .field { display: grid; gap: var(--s-2); }
@@ -136,95 +134,106 @@ button:disabled { cursor: not-allowed; }
   width: 100%;
   min-height: 48px;
   padding: var(--s-3) var(--s-4);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--r-control);
+  border: 0;
+  border-radius: 0;
   background: var(--surface);
+  box-shadow: var(--pixel-edge), inset 0 var(--px) 0 rgba(16, 18, 43, 0.12);
   font-size: var(--t-base);
   line-height: 1.4;
 }
 textarea.input { min-height: 112px; resize: vertical; }
 .input::placeholder { color: var(--ink-3); }
-.input:focus { outline: none; border-color: var(--stamp); box-shadow: 0 0 0 3px var(--stamp-wash); }
+.input:focus { outline: none; --edge: var(--stamp); }
 
-/* chip toggles (multi-select) */
-.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+/* Secondary controls carry a 2px edge so panels and the primary action outrank them. */
+
+/* chip toggles (multi-select): picked chips light up like a ? block */
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-3); padding: var(--px); }
 .chip {
+  --px: 2px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: 40px;
   padding: 0 var(--s-4);
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
+  border: 0;
+  border-radius: 0;
   background: var(--surface);
+  box-shadow: var(--pixel-edge);
   font-size: var(--t-sm);
-  font-weight: 600;
-  transition: background-color 120ms, border-color 120ms, color 120ms;
+  font-weight: 700;
+  transition: background-color 80ms, transform 80ms steps(2);
 }
-.chip:hover { border-color: var(--ink); }
+.chip:hover { background: var(--surface-2); }
 .chip[aria-pressed="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--on-ink);
+  background: var(--coin);
+  color: var(--on-coin);
+  box-shadow: var(--pixel-edge), var(--pixel-bevel);
+  transform: translateY(-2px);
 }
 
 /* segmented (single-select) */
 .segmented {
+  --px: 2px;
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 2px;
+  gap: 3px;
+  margin: var(--px);
   padding: 3px;
-  border-radius: calc(var(--r-control) + 3px);
   background: var(--surface-2);
+  box-shadow: var(--pixel-edge);
 }
 .segmented button {
   min-height: 38px;
   padding: 0 var(--s-4);
   border: 0;
-  border-radius: var(--r-control);
+  border-radius: 0;
   background: transparent;
   color: var(--ink-2);
   font-size: var(--t-sm);
   font-weight: 700;
 }
+.segmented button:hover { color: var(--ink); }
 .segmented button[aria-checked="true"] {
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: 0 1px 2px rgba(24, 33, 61, 0.12);
+  background: var(--coin);
+  color: var(--on-coin);
+  box-shadow: var(--pixel-bevel);
 }
 .segmented--block { display: flex; }
 .segmented--block button { flex: 1; }
 
-/* switch */
+/* switch: a two-state block */
 .switch {
   position: relative;
   flex: none;
-  width: 46px; height: 28px;
+  width: 48px; height: 28px;
+  margin: var(--px);
   border: 0;
-  border-radius: 999px;
-  background: var(--rule-strong);
-  transition: background-color 150ms;
+  border-radius: 0;
+  background: var(--surface-2);
+  box-shadow: var(--pixel-edge);
+  transition: background-color 80ms;
 }
 .switch::after {
   content: '';
   position: absolute;
-  top: 3px; left: 3px;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--surface);
-  transition: transform 150ms var(--ease-out);
+  top: 4px; left: 4px;
+  width: 20px; height: 20px;
+  background: var(--ink-3);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+  transition: transform 120ms steps(3);
 }
-.switch[aria-checked="true"] { background: var(--ink); }
-.switch[aria-checked="true"]::after { transform: translateX(18px); }
+.switch[aria-checked="true"] { background: var(--pipe); }
+.switch[aria-checked="true"]::after { background: #fff; transform: translateX(20px); }
 
-/* inline notice */
+/* inline notice: a text box */
 .notice {
   padding: var(--s-3) var(--s-4);
-  border-radius: var(--r-control);
   background: var(--surface-2);
+  box-shadow: var(--pixel-edge);
   font-size: var(--t-sm);
 }
-.notice--error { background: var(--danger-wash); color: var(--danger); }
+.notice--error { --edge: var(--danger); background: var(--danger-wash); color: var(--danger); }
 
 /* empty state */
 .empty {
@@ -235,20 +244,72 @@ textarea.input { min-height: 112px; resize: vertical; }
 }
 .empty p { color: var(--ink-2); max-width: 30em; }
 
+/* spinner: a coin flipping on the spot */
 .spinner {
   width: 18px; height: 18px;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: spin 700ms linear infinite;
+  background: url('../assets/pixel/coin.svg') center / contain no-repeat;
+  image-rendering: pixelated;
+  animation: coin-flip 600ms steps(4) infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes coin-flip { 50% { transform: scaleX(0.15); } }
 
 .loading-screen {
   display: grid;
   place-items: center;
   min-height: 60dvh;
   color: var(--ink-2);
+}
+
+/* ---------- segmented meters: HP bars, XP bars ---------- */
+/* :where() keeps the defaults at zero specificity, so a meter's own class can recolour it
+   whatever order the stylesheets load in */
+:where(.px-meter) {
+  --cell: 10px;
+  --meter: var(--ok);
+  position: relative;
+  display: block;
+  height: 18px;
+  margin: var(--px);
+  padding: 3px;
+  background: var(--edge);
+  box-shadow: var(--pixel-edge);
+  overflow: hidden;
+}
+:where(.px-meter) > span {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(to right, var(--meter) 0 var(--cell), transparent var(--cell) calc(var(--cell) + 2px));
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+  transition: width 300ms steps(6);
+}
+
+/* ---------- motion for the shared controls ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* a two-block glint passes over the primary action now and then */
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -24px;
+    width: 6px;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 10px 0 0 rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+    animation: glint 4.5s steps(14) infinite;
+  }
+  @keyframes glint {
+    0%, 72% { left: -24px; }
+    100% { left: calc(100% + 12px); }
+  }
+  .btn-primary:hover:not(:disabled),
+  .btn-secondary:hover:not(:disabled) { translate: 0 -2px; }
+
+  /* picked things hop; meters fill cell by cell */
+  .chip[aria-pressed="true"] { animation: hop 280ms steps(4); }
+  .segmented button[aria-checked="true"] { animation: pop 240ms steps(3); }
+  :where(.px-meter) > span { animation: meter-in 900ms steps(9) both; }
+  @keyframes meter-in { from { width: 0; } }
 }
 
 @media (prefers-reduced-motion: reduce) {

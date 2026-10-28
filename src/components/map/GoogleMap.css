@@ -1,5 +1,4 @@
 .google-map {
   overflow: hidden;
-  border-radius: var(--r-panel);
   background: var(--surface-2);
 }

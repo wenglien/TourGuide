@@ -103,7 +103,7 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
 
             <div className="budget__meter">
                 <div
-                    className="budget__bar"
+                    className="budget__bar px-meter"
                     role="meter"
                     aria-valuemin={0}
                     aria-valuemax={100}

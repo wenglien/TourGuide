@@ -1,31 +1,40 @@
-/* TourGuide tokens — see docs/DESIGN.md */
+/* TourGuide tokens — see docs/DESIGN.md (8-bit pass, 2026-10-27) */
 :root {
   color-scheme: light;
 
-  --paper: #F1F3EE;
+  /* overworld by day: sky page, white panels, black pixel edges */
+  --paper: #9ED6FF;
   --surface: #FFFFFF;
-  --surface-2: #E8EBE4;
-  --ink: #18213D;
-  --ink-2: #4E5770;
-  --ink-3: #7A8197;
-  --rule: #D3D8CF;
-  --rule-strong: #B7BEB2;
-  --stamp: #5B3CC4;
-  --stamp-wash: rgba(91, 60, 196, 0.1);
-  --on-ink: #F1F3EE;
+  --surface-2: #E3F2FF;
+  --ink: #10122B;
+  --ink-2: #2D3766;
+  --ink-3: #4D5A8C;
+  --rule: #B6CDEA;
+  --rule-strong: #10122B;
+  --edge: #10122B;
+  --stamp: #E52521;
+  --stamp-wash: rgba(229, 37, 33, 0.12);
+  --on-ink: #FFFFFF;
 
-  --line-morning: #0B8A7E;
-  --line-afternoon: #C98A00;
-  --line-evening: #CC3F67;
-  --line-night: #3A47B5;
+  --coin: #FBD000;
+  --on-coin: #10122B;
+  --on-stamp: #FFFFFF;
+  --pipe: #00A651;
+  --sky-art: url('../assets/pixel/sky.svg');
+  --ground-art: url('../assets/pixel/ground.svg');
 
-  --ok: #1F7A4D;
-  --warn: #A3620A;
-  --danger: #B3263E;
-  --danger-wash: rgba(179, 38, 62, 0.08);
+  --line-morning: #00A651;
+  --line-afternoon: #E09200;
+  --line-evening: #D6336C;
+  --line-night: #3B44C9;
 
-  --font-sans: 'Overpass', 'Noto Sans TC', 'PingFang TC', 'Heiti TC', system-ui, sans-serif;
-  --font-stamp: 'Noto Serif TC', 'Songti TC', serif;
+  --ok: #00873F;
+  --danger: #D21F1B;
+  --danger-wash: rgba(210, 31, 27, 0.1);
+
+  /* crisp vector faces: the pixels live in the objects, not in the letters */
+  --font-sans: 'Chiron GoRound TC', 'PingFang TC', 'Heiti TC', system-ui, sans-serif;
+  --font-hud: 'Bungee', 'Chiron GoRound TC', sans-serif;
 
   /* 1.25 modular scale */
   --t-xs: 0.8125rem;
@@ -47,15 +56,14 @@
   --s-8: 64px;
   --s-9: 96px;
 
-  /* radius encodes hierarchy: controls small, sheets large, stations round */
-  --r-control: 10px;
-  --r-panel: 18px;
-  --r-sheet: 24px;
+  /* pixels have no curves: no radii anywhere; edges are --pixel-edge at this thickness */
+  --px: 3px;
 
-  --shadow-sheet: 0 -12px 40px rgba(24, 33, 61, 0.16);
-  --shadow-pop: 0 12px 32px rgba(24, 33, 61, 0.14);
+  --shadow-sheet: 0 -6px 0 rgba(16, 18, 43, 0.25);
+  --shadow-pop: 6px 6px 0 rgba(16, 18, 43, 0.3);
+  /* the hard drop under raised panels */
+  --pixel-drop: 0 9px 0 0 rgba(16, 18, 43, 0.22);
 
-  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --content-max: 1120px;
   --tabbar-h: 0px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -64,53 +72,74 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --paper: #121628;
-    --surface: #1A2038;
-    --surface-2: #232A46;
-    --ink: #E7EAF3;
-    --ink-2: #A9B0C6;
-    --ink-3: #7E86A0;
-    --rule: #2D3553;
-    --rule-strong: #414A6B;
-    --stamp: #A691FF;
-    --stamp-wash: rgba(166, 145, 255, 0.14);
-    --on-ink: #121628;
-    --line-morning: #3CC7B8;
-    --line-afternoon: #F0B429;
-    --line-evening: #F07A9A;
+    /* the night level */
+    --paper: #14123A;
+    --surface: #24216A;
+    --surface-2: #2F2B80;
+    --ink: #F4F1FF;
+    --ink-2: #C9C5F2;
+    --ink-3: #9C97D6;
+    --rule: #3E3A8E;
+    --rule-strong: #F4F1FF;
+    --edge: #05041A;
+    --stamp: #FF5A4E;
+    --stamp-wash: rgba(255, 90, 78, 0.16);
+    --on-ink: #14123A;
+    --sky-art: url('../assets/pixel/stars.svg');
+    --ground-art: url('../assets/pixel/ground-night.svg');
+    --line-morning: #3BE07A;
+    --line-afternoon: #FFC93C;
+    --line-evening: #FF6FA0;
     --line-night: #8C97FF;
-    --ok: #5BC98D;
-    --warn: #F0B429;
-    --danger: #FF7A8E;
-    --danger-wash: rgba(255, 122, 142, 0.12);
-    --shadow-sheet: 0 -12px 40px rgba(0, 0, 0, 0.5);
-    --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.45);
+    --ok: #3BE07A;
+    --danger: #FF6B6B;
+    --danger-wash: rgba(255, 107, 107, 0.14);
+    --shadow-sheet: 0 -6px 0 rgba(0, 0, 0, 0.5);
+    --shadow-pop: 6px 6px 0 rgba(0, 0, 0, 0.5);
+    --pixel-drop: 0 9px 0 0 rgba(0, 0, 0, 0.4);
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #121628;
-  --surface: #1A2038;
-  --surface-2: #232A46;
-  --ink: #E7EAF3;
-  --ink-2: #A9B0C6;
-  --ink-3: #7E86A0;
-  --rule: #2D3553;
-  --rule-strong: #414A6B;
-  --stamp: #A691FF;
-  --stamp-wash: rgba(166, 145, 255, 0.14);
-  --on-ink: #121628;
-  --line-morning: #3CC7B8;
-  --line-afternoon: #F0B429;
-  --line-evening: #F07A9A;
+  --paper: #14123A;
+  --surface: #24216A;
+  --surface-2: #2F2B80;
+  --ink: #F4F1FF;
+  --ink-2: #C9C5F2;
+  --ink-3: #9C97D6;
+  --rule: #3E3A8E;
+  --rule-strong: #F4F1FF;
+  --edge: #05041A;
+  --stamp: #FF5A4E;
+  --stamp-wash: rgba(255, 90, 78, 0.16);
+  --on-ink: #14123A;
+  --sky-art: url('../assets/pixel/stars.svg');
+  --ground-art: url('../assets/pixel/ground-night.svg');
+  --line-morning: #3BE07A;
+  --line-afternoon: #FFC93C;
+  --line-evening: #FF6FA0;
   --line-night: #8C97FF;
-  --ok: #5BC98D;
-  --warn: #F0B429;
-  --danger: #FF7A8E;
-  --danger-wash: rgba(255, 122, 142, 0.12);
-  --shadow-sheet: 0 -12px 40px rgba(0, 0, 0, 0.5);
-  --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --ok: #3BE07A;
+  --danger: #FF6B6B;
+  --danger-wash: rgba(255, 107, 107, 0.14);
+  --shadow-sheet: 0 -6px 0 rgba(0, 0, 0, 0.5);
+  --shadow-pop: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  --pixel-drop: 0 9px 0 0 rgba(0, 0, 0, 0.4);
+}
+
+/* The pixel edge: a border drawn as four offset shadows, so the corners stay notched like a sprite.
+   Declared on every element so a local --edge (focus, selection) recolours it. */
+*, *::before, *::after {
+  --pixel-edge:
+    0 calc(var(--px) * -1) 0 0 var(--edge),
+    0 var(--px) 0 0 var(--edge),
+    calc(var(--px) * -1) 0 0 0 var(--edge),
+    var(--px) 0 0 0 var(--edge);
+  /* a block: lit top, shaded bottom */
+  --pixel-bevel: inset 0 calc(var(--px) * -1) 0 rgba(0, 0, 0, 0.22), inset 0 var(--px) 0 rgba(255, 255, 255, 0.35);
+  /* a raised panel: edge plus a hard drop */
+  --pixel-raised: var(--pixel-edge), var(--pixel-drop);
 }
 
 /* slot → line colour, usable anywhere via data-slot */

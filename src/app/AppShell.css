@@ -1,4 +1,36 @@
-.shell { min-height: 100dvh; }
+/* The shell is the level: drifting sky behind, a top bar, the page, and a ground floor. */
+.shell {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+.shell__main { flex: 1; }
+
+/* sky: wider than the viewport by one tile, so it can drift seamlessly */
+.shell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: calc(100% + 640px);
+  height: 260px;
+  background: var(--sky-art) 0 0 / 640px 260px repeat-x;
+  pointer-events: none;
+}
+
+/* floor: a row of ground blocks closes every page */
+.shell::after {
+  content: '';
+  display: block;
+  height: 48px;
+  border-top: 4px solid var(--edge);
+  background: var(--ground-art) 0 0 / 24px 24px repeat;
+  image-rendering: pixelated;
+}
 
 .skip-link {
   position: absolute;
@@ -6,7 +38,6 @@
   top: -60px;
   z-index: 200;
   padding: var(--s-2) var(--s-3);
-  border-radius: var(--r-control);
   background: var(--ink);
   color: var(--on-ink);
   font-weight: 700;
@@ -18,42 +49,43 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  border-bottom: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: saturate(1.2) blur(10px);
-  -webkit-backdrop-filter: saturate(1.2) blur(10px);
+  border-bottom: 4px solid var(--edge);
+  background: var(--paper);
   padding-top: env(safe-area-inset-top, 0px);
 }
 
 .topbar__inner {
   display: flex;
   align-items: center;
-  gap: var(--s-5);
+  gap: var(--s-2);
   max-width: var(--content-max);
   height: 56px;
   margin: 0 auto;
   padding: 0 var(--s-4);
 }
 
-.topbar__brand { text-decoration: none; }
+.topbar__brand { flex: none; text-decoration: none; }
 
 .wordmark {
   display: inline-flex;
   align-items: center;
   gap: var(--s-2);
-  font-weight: 900;
   font-size: var(--t-md);
+  font-weight: 900;
   letter-spacing: -0.01em;
 }
+.wordmark__coin { width: 20px; height: 20px; image-rendering: pixelated; }
 
 .topbar__end {
   display: flex;
+  flex-shrink: 1;
   align-items: center;
   gap: var(--s-2);
+  min-width: 0;
   margin-left: auto;
 }
 
-.topbar__login { min-height: 36px; }
+.topbar__login { min-height: 36px; white-space: nowrap; }
 
 .account {
   display: inline-flex;
@@ -61,29 +93,58 @@
   gap: var(--s-2);
   min-height: 40px;
   padding: 2px;
-  border-radius: 999px;
   color: var(--ink);
   font-size: var(--t-sm);
   font-weight: 700;
   text-decoration: none;
 }
-.account:hover { background: var(--surface-2); }
-.account.active { background: var(--surface-2); }
-.account__avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.account:hover,
+.account.active { background: var(--surface-2); box-shadow: var(--pixel-edge); }
+.account__avatar { width: 32px; height: 32px; object-fit: cover; box-shadow: var(--pixel-edge); }
 .account__label { display: none; padding-right: var(--s-3); }
 
+/* the coin purse: how many coins you've popped */
+.coin-count {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-hud);
+  font-size: var(--t-sm);
+  line-height: 1;
+}
+.coin-count img { width: 16px; height: 16px; image-rendering: pixelated; }
+
+@media (min-width: 440px) {
+  .coin-count { display: inline-flex; }
+}
 @media (min-width: 600px) {
   .account__label { display: inline; }
 }
-
 /* narrow phones: keep brand, language and login on one line */
-.topbar__inner { gap: var(--s-2); }
-.topbar__brand { flex: none; }
-.topbar__end { min-width: 0; flex-shrink: 1; }
-.lang-btn, .topbar__login { white-space: nowrap; }
 @media (max-width: 380px) {
   .wordmark { font-size: var(--t-base); }
   .topbar__inner { padding: 0 var(--s-3); }
   .topbar__login { padding: 0 var(--s-2); }
-  .lang-btn { min-width: 34px; }
+}
+
+/* ---------- the level is alive ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .shell::before { animation: sky-drift 90s steps(320) infinite; }
+  .shell::after { animation: ground-scroll 1.6s steps(8) infinite; }
+  .wordmark__coin { animation: coin-spin 1.6s steps(1) infinite; }
+  .coin-count { animation: pop 240ms steps(3); }
+
+  /* the night level: stars twinkle as they drift */
+  :root[data-theme="dark"] .shell::before {
+    animation: sky-drift 140s steps(320) infinite, twinkle 2.4s steps(2) infinite;
+  }
+
+  @keyframes sky-drift { to { transform: translateX(-640px); } }
+  @keyframes ground-scroll { to { background-position: -24px 0; } }
+  @keyframes twinkle { 50% { opacity: 0.55; } }
+}
+@media (prefers-reduced-motion: no-preference) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .shell::before {
+    animation: sky-drift 140s steps(320) infinite, twinkle 2.4s steps(2) infinite;
+  }
 }

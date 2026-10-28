@@ -35,4 +35,7 @@ dist-ssr
 
 # Local-only: archived screenshots and retired puppeteer test scripts
 /archive/
-/tools/
+/tools/*
+# ...but the art generators the README points to are part of the repo
+!/tools/gen-pixel-sprites.mjs
+!/tools/gen-readme-art.py

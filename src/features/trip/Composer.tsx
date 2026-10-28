@@ -6,6 +6,8 @@ import type { LucideIcon } from 'lucide-react';
 import type { PreferenceCategory, TravelPace, WalkingLevel } from '../../types';
 import { AddressAutocomplete } from '../../components/map/AddressAutocomplete';
 import { Segmented } from '../../ui/Segmented';
+import { DropText } from '../../ui/DropText';
+import { CoinBlocks } from '../../ui/CoinBlocks';
 import { useLanguage } from '../../services/i18n';
 import { DayShape } from '../plan/DayShape';
 import { QuickStart } from './QuickStart';
@@ -50,7 +52,8 @@ export const Composer: React.FC<{ planner: Planner }> = ({ planner: p }) => {
     return (
         <form className="composer" onSubmit={submit} noValidate>
             <header className="composer__head">
-                <h1 className="composer__title">{t('home2.title')}</h1>
+                <CoinBlocks />
+                <h1 className="composer__title"><DropText text={t('home2.title')} /></h1>
                 <p className="composer__lede">{t('home2.lede')}</p>
             </header>
 

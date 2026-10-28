@@ -19,7 +19,7 @@
   gap: var(--s-3);
   margin-top: var(--s-5);
   padding-top: var(--s-5);
-  border-top: 1px solid var(--rule);
+  border-top: 2px solid var(--rule);
 }
 .walk-notes ul {
   display: grid;

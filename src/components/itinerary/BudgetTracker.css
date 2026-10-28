@@ -6,24 +6,13 @@
   gap: var(--s-3);
 }
 .budget__figures dt { color: var(--ink-3); font-size: var(--t-xs); font-weight: 700; }
-.budget__figures dd { font-size: var(--t-md); font-weight: 800; }
+.budget__figures dd { font-family: var(--font-hud); font-size: var(--t-md); font-weight: 400; }
 .budget__figures dd.is-over { color: var(--danger); }
 
 .budget__meter { display: grid; gap: var(--s-1); }
-.budget__bar {
-  height: 8px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--surface-2);
-}
-.budget__bar span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--ink);
-  transition: width 300ms var(--ease-out);
-}
-.budget__bar span.is-over { background: var(--danger); }
+/* coins spent: a segmented meter that turns red and blinks once you go over */
+.budget__bar { --meter: var(--coin); }
+.budget__bar span.is-over { --meter: var(--danger); }
 
 .budget__breakdown li,
 .budget__expenses li {
@@ -31,7 +20,7 @@
   justify-content: space-between;
   gap: var(--s-3);
   padding: var(--s-2) 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 2px solid var(--rule);
   font-size: var(--t-sm);
 }
 .budget__expenses li > span:first-child { display: grid; }
@@ -53,3 +42,9 @@
 }
 .budget__form-wide { grid-column: 1 / -1; }
 .budget__form-actions { display: flex; justify-content: flex-end; gap: var(--s-2); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* over budget: the meter blinks like low health */
+  .budget__bar span.is-over { animation: meter-warn 700ms steps(1) infinite; }
+  @keyframes meter-warn { 50% { opacity: 0.45; } }
+}

@@ -274,7 +274,7 @@ export const TripsPage: React.FC = () => {
                                         <strong>{title}</strong>
                                         <small>{desc}</small>
                                         {!done && (
-                                            <span className="achievements__bar" role="meter" aria-valuemin={0} aria-valuemax={goal} aria-valuenow={current} aria-label={title}>
+                                            <span className="achievements__bar px-meter" role="meter" aria-valuemin={0} aria-valuemax={goal} aria-valuenow={current} aria-label={title}>
                                                 <span style={{ width: `${Math.min(100, (current / goal) * 100)}%` }} />
                                             </span>
                                         )}

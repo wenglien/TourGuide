@@ -1,8 +1,8 @@
-/* RouteLine: the itinerary drawn as a transit line.
+/* RouteLine: the itinerary drawn as a transit line, built from pixel blocks.
    Columns: timetable | rail | content. Colour comes from [data-slot] → --line. */
 
 .rl {
-  --rail-w: 5px;
+  --rail-w: 6px;
   --node: 18px;
   --time-col: 52px;
   --rail-col: 28px;
@@ -22,10 +22,10 @@
 .rl-time {
   padding-top: 1px;
   text-align: right;
-  font-weight: 800;
-  font-size: var(--t-base);
-  line-height: 1.35;
   color: var(--ink);
+  font-family: var(--font-hud);
+  font-size: var(--t-sm);
+  line-height: 1.5;
 }
 
 .rl-rail {
@@ -34,6 +34,7 @@
   justify-content: center;
 }
 
+/* rail: a solid track with an ink outline */
 .rl-rail::before {
   content: '';
   position: absolute;
@@ -42,7 +43,8 @@
   left: 50%;
   width: var(--rail-w);
   margin-left: calc(var(--rail-w) / -2);
-  background: var(--line);
+  background: var(--rail-bg, var(--line));
+  box-shadow: 2px 0 0 var(--edge), -2px 0 0 var(--edge);
   transform-origin: top;
 }
 
@@ -50,6 +52,7 @@
 .rl-row--head.is-first .rl-rail::before { top: 6px; }
 .rl-row--station.is-end .rl-rail::before { bottom: auto; height: 12px; }
 
+/* stations are blocks */
 .rl-node {
   position: relative;
   z-index: 1;
@@ -57,41 +60,40 @@
   height: var(--node);
   margin-top: 2px;
   border: 4px solid var(--line);
-  border-radius: 50%;
-  background: var(--paper);
+  background: var(--surface);
+  box-shadow: 0 0 0 2px var(--edge);
 }
 
-/* transfer: double ring in the new line's colour */
+/* transfer: a bigger block tinted with the new line's colour (coin yellow stays "selected") */
 .rl-node--transfer {
   width: 26px;
   height: 26px;
   margin-top: -2px;
-  border-width: 4px;
-  box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--line);
+  background: color-mix(in srgb, var(--line) 35%, var(--surface));
+  box-shadow: 0 0 0 2px var(--edge), 0 0 0 5px var(--surface), 0 0 0 8px var(--edge);
 }
 
+/* a stamped stop turns into a coin */
 .rl-node--stamped {
-  background: var(--stamp);
-  border-color: var(--line);
+  border-color: var(--edge);
+  background: url('../../assets/pixel/coin.svg') center / 100% 100% no-repeat, var(--coin);
+  image-rendering: pixelated;
 }
 
-.rl-row--station.is-active .rl-node {
-  transform: scale(1.25);
-  background: var(--line);
-}
+.rl-row--station.is-active .rl-node { background: var(--line); }
 
 /* ---------- head ---------- */
 .rl-head { padding-bottom: var(--s-4); }
 
 .rl-slot {
   display: inline-block;
-  padding: 2px 10px;
-  border-radius: 999px;
+  padding: 3px 10px;
   background: var(--line);
   color: #fff;
   font-size: var(--t-xs);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.6;
+  box-shadow: 0 0 0 2px var(--edge), inset 0 -3px 0 rgba(0, 0, 0, 0.22);
 }
 :root[data-theme="dark"] .rl-slot { color: var(--paper); }
 @media (prefers-color-scheme: dark) {
@@ -101,7 +103,6 @@
 .rl-title {
   margin-top: var(--s-2);
   font-size: var(--t-md);
-  font-weight: 800;
   line-height: 1.3;
 }
 
@@ -116,10 +117,13 @@
 .rl-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-1);
+  gap: 0;
   margin-top: var(--s-2);
   margin-left: calc(var(--s-3) * -1);
 }
+.rl-actions { margin-top: var(--s-1); }
+.rl-actions .btn { min-height: 32px; padding: 0 var(--s-3); color: var(--ink-2); }
+.rl-actions .btn:hover:not(:disabled) { color: var(--ink); }
 
 /* ---------- stations ---------- */
 .rl-station { padding-bottom: var(--s-5); min-width: 0; }
@@ -131,7 +135,7 @@
   background: none;
   text-align: left;
   font-size: var(--t-base);
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1.35;
   overflow-wrap: anywhere;
 }
@@ -161,122 +165,112 @@
   font-size: var(--t-sm);
 }
 
-.rl-actions .btn { color: var(--ink-2); }
-.rl-actions .btn:hover:not(:disabled) { color: var(--ink); }
-
 /* ---------- legs (travel between stations) ---------- */
 .rl-row--leg .rl-leg {
   align-self: center;
   margin: calc(var(--s-3) * -1) 0 var(--s-3);
   color: var(--ink-3);
   font-size: var(--t-xs);
-  font-weight: 600;
+  font-weight: 700;
 }
+.rl-row--leg .rl-leg::before { content: '› '; color: var(--line, var(--ink-3)); }
 
 .rl-row--body > div { padding-bottom: var(--s-5); min-width: 0; }
-
-/* ---------- the one orchestrated motion: the line draws in ---------- */
-.rl--animate .rl-rail::before {
-  animation: rl-draw 520ms var(--ease-out) both;
-  animation-delay: calc(var(--seg, 0) * 260ms);
-}
-.rl--animate .rl-node {
-  animation: rl-node 260ms var(--ease-out) both;
-  animation-delay: calc(var(--seg, 0) * 260ms + 180ms);
-}
-
-@keyframes rl-draw { from { transform: scaleY(0); } }
-@keyframes rl-node { from { transform: scale(0); } }
 
 @media (min-width: 900px) {
   .rl { --time-col: 60px; --rail-col: 32px; }
 }
 
-/* ---------- loading: the line extends while we wait ---------- */
-.route-loading {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: var(--s-4);
-  align-items: start;
-  max-width: 520px;
-  padding: var(--s-7) 0;
-}
-
-.route-loading__title { font-size: var(--t-lg); font-weight: 900; line-height: 1.3; }
-
-.route-loading__line { display: grid; justify-items: center; }
-.route-loading__line span {
-  position: relative;
-  display: block;
-  width: 5px;
-  height: 56px;
-  background: var(--line);
-  transform-origin: top;
-  animation: rl-extend 2.4s var(--ease-out) infinite;
-}
-.route-loading__line span::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -9px;
-  width: 18px;
-  height: 18px;
-  margin-left: -9px;
-  border: 4px solid var(--line);
-  border-radius: 50%;
-  background: var(--paper);
-}
-.route-loading__line span:nth-child(2) { animation-delay: 0.4s; }
-.route-loading__line span:nth-child(3) { animation-delay: 0.8s; }
-
-@keyframes rl-extend {
-  0% { transform: scaleY(0); opacity: 0; }
-  20%, 70% { transform: scaleY(1); opacity: 1; }
-  100% { transform: scaleY(1); opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .route-loading__line span { animation: none; }
-}
-
-.rl-actions { margin-top: var(--s-1); gap: 0; }
-.rl-actions .btn { min-height: 32px; padding: 0 var(--s-3); }
-.rl-head-actions { gap: 0; }
-
-/* ---------- tracking: the train on the line ---------- */
-.rl-rail::before { background: var(--rail-bg, var(--line)); }
-
+/* ---------- tracking: the traveller on the line ---------- */
 .rl--tracking .rl-row { --faded: color-mix(in srgb, var(--line) 26%, transparent); }
 .rl--tracking .is-ahead { --rail-bg: var(--faded); }
-.rl--tracking .is-ahead .rl-node { border-color: color-mix(in srgb, var(--line) 45%, var(--paper)); }
+.rl--tracking .is-ahead .rl-node,
+.rl--tracking .is-arriving .rl-node { border-color: color-mix(in srgb, var(--line) 45%, var(--paper)); }
 .rl--tracking .is-through { --rail-bg: linear-gradient(to bottom, var(--line) var(--rail-cut, 50%), var(--faded) var(--rail-cut, 50%)); }
 .rl--tracking .is-arriving,
 .rl--tracking .is-now { --rail-bg: linear-gradient(to bottom, var(--line) 12px, var(--faded) 12px); }
-.rl--tracking .is-arriving .rl-node { border-color: color-mix(in srgb, var(--line) 45%, var(--paper)); }
 
 .rl--tracking .is-now .rl-node {
   background: var(--line);
-  box-shadow: 0 0 0 4px var(--paper), 0 0 0 7px color-mix(in srgb, var(--line) 35%, transparent);
-  transform: scale(1.15);
+  box-shadow: 0 0 0 2px var(--edge), 0 0 0 5px var(--surface), 0 0 0 8px var(--line);
 }
 .rl--tracking .is-now .rl-name { color: var(--ink); }
 .rl--tracking .is-now .rl-time { color: var(--line); }
 .rl--tracking .is-ahead .rl-time { color: var(--ink-3); }
 
-.rl-node { transition: transform 160ms var(--ease-out), box-shadow 160ms, background-color 160ms, border-color 160ms; }
-
-/* the train: a short capsule riding the rail */
+/* the traveller: the same sprite as the scrubber, outlined so it reads on the rail */
 .rl-train {
   position: absolute;
   left: 50%;
   z-index: 2;
-  width: 14px;
+  width: 21px;
   height: 24px;
-  margin: -12px 0 0 -7px;
-  border: 3px solid var(--paper);
-  border-radius: 7px;
-  background: var(--ink);
-  box-shadow: 0 2px 6px rgba(24, 33, 61, 0.3);
+  margin: -12px 0 0 -10px;
+  background: url('../../assets/pixel/hiker.svg') 0 0 / 100% 100% no-repeat;
+  filter: drop-shadow(2px 0 0 var(--paper)) drop-shadow(-2px 0 0 var(--paper));
+  image-rendering: pixelated;
   transition: top 120ms linear;
 }
 .rl-train--arriving { top: -4px; }
+
+/* ---------- loading: a level loading in ---------- */
+.route-loading {
+  display: grid;
+  gap: var(--s-5);
+  max-width: 520px;
+  padding: var(--s-7) 0;
+}
+.route-loading__title { font-size: var(--t-lg); line-height: 1.3; }
+
+.px-loader { position: relative; display: grid; gap: var(--s-3); padding-top: 40px; }
+
+@property --fill { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+.px-loader__bar { --cell: 14px; height: 26px; }
+/* three slot colours, revealed one cell at a time (static at 60% without motion) */
+.px-loader__bar > span {
+  --fill: 60%;
+  width: 100%;
+  background:
+    repeating-linear-gradient(to right, transparent 0 var(--cell), var(--edge) var(--cell) calc(var(--cell) + 3px)),
+    linear-gradient(to right, var(--line-morning) 0 33.3%, var(--line-afternoon) 33.3% 66.6%, var(--line-evening) 66.6%);
+  clip-path: inset(0 calc(100% - var(--fill)) 0 0);
+}
+.px-loader__sprite {
+  position: absolute;
+  top: 0;
+  left: calc(60% - 28px);
+  width: 28px;
+  height: 32px;
+  background: url('../../assets/pixel/hiker.svg') 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* the line draws itself in, in frames; slot tags pop as their segment arrives */
+  .rl--animate .rl-rail::before {
+    animation: rl-draw 520ms steps(6) both;
+    animation-delay: calc(var(--seg, 0) * 260ms);
+  }
+  .rl--animate .rl-node {
+    animation: rl-node 260ms steps(3) both;
+    animation-delay: calc(var(--seg, 0) * 260ms + 180ms);
+  }
+  .rl-slot { animation: pop 300ms steps(3) both; animation-delay: calc(var(--seg, 0) * 260ms + 120ms); }
+
+  /* stations bump when you point at them; the traveller breathes */
+  .rl-node { transition: translate 90ms steps(2); }
+  .rl-row--station:hover .rl-node { translate: 0 -4px; }
+  .rl-train { animation: idle-bob 1.2s steps(1) infinite; }
+
+  /* loading: the bar fills while the traveller runs and hops along it */
+  .px-loader__bar > span { animation: px-fill 2.4s steps(12) infinite; }
+  .px-loader__sprite { animation: px-run 2.4s steps(12) infinite, px-hop 400ms steps(2) infinite; }
+
+  @keyframes rl-draw { from { transform: scaleY(0); } }
+  @keyframes rl-node { from { transform: scale(0); } }
+  @keyframes px-fill { from { --fill: 0%; } to { --fill: 100%; } }
+  @keyframes px-run { from { left: 0; } to { left: calc(100% - 28px); } }
+  @keyframes px-hop { 50% { transform: translateY(-6px); background-image: url('../../assets/pixel/hiker-step.svg'); } }
+}

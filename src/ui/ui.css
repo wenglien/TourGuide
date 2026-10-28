@@ -1,4 +1,4 @@
-/* ---------- sheet ---------- */
+/* ---------- sheet: a game text box ---------- */
 .sheet-layer {
   position: fixed;
   inset: 0;
@@ -6,8 +6,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: rgba(18, 22, 40, 0.42);
-  animation: sheet-fade 160ms ease-out;
+  background: rgba(16, 18, 43, 0.55);
 }
 
 .sheet {
@@ -15,18 +14,16 @@
   flex-direction: column;
   width: 100%;
   max-height: min(88dvh, 820px);
-  border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  border-top: 4px solid var(--edge);
   background: var(--surface);
-  box-shadow: var(--shadow-sheet);
+  box-shadow: inset 0 4px 0 var(--surface-2), var(--shadow-sheet);
   outline: none;
-  animation: sheet-rise 220ms var(--ease-out);
 }
 
 .sheet__grip {
-  width: 40px; height: 4px;
+  width: 48px; height: 6px;
   margin: var(--s-2) auto 0;
-  border-radius: 999px;
-  background: var(--rule-strong);
+  background: var(--edge);
 }
 
 .sheet__head {
@@ -35,7 +32,7 @@
   gap: var(--s-3);
   padding: var(--s-3) var(--s-3) var(--s-2) var(--s-5);
 }
-.sheet__title { flex: 1; font-size: var(--t-md); font-weight: 800; }
+.sheet__title { flex: 1; font-size: var(--t-md); }
 .sheet__close { margin-left: auto; }
 
 .sheet__body {
@@ -48,29 +45,32 @@
 
 .sheet__foot {
   padding: var(--s-3) var(--s-5) calc(var(--s-4) + var(--safe-bottom));
-  border-top: 1px solid var(--rule);
+  border-top: 3px dashed var(--rule);
 }
 
 .sheet__actions { display: flex; gap: var(--s-2); justify-content: flex-end; }
 .sheet__actions .btn { flex: 1; }
+.sheet__actions--wrap { flex-wrap: wrap; }
+.sheet__actions--wrap .btn { flex: 1 1 140px; }
 
-.btn-primary--danger { background: var(--danger); color: #fff; }
+.btn-primary--danger { background: var(--danger); color: var(--on-stamp); }
 .btn-primary--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--danger) 85%, black); }
 
 @media (min-width: 720px) {
   .sheet-layer { align-items: center; padding: var(--s-6); }
-  .sheet { max-width: 560px; border-radius: var(--r-sheet); animation-name: sheet-pop; }
+  /* a framed dialog: edge, a white mat, edge again, then a hard drop */
+  .sheet {
+    max-width: 560px;
+    border: 0;
+    box-shadow: 0 0 0 4px var(--edge), 0 0 0 8px var(--surface), 0 0 0 12px var(--edge), 12px 18px 0 8px rgba(0, 0, 0, 0.3);
+  }
   .sheet__grip { display: none; }
   .sheet__head { padding-top: var(--s-4); }
   .sheet__foot { padding-bottom: var(--s-4); }
   .sheet__actions .btn { flex: none; }
 }
 
-@keyframes sheet-fade { from { opacity: 0; } }
-@keyframes sheet-rise { from { transform: translateY(24px); opacity: 0.6; } }
-@keyframes sheet-pop { from { transform: scale(0.97); opacity: 0; } }
-
-/* ---------- toast ---------- */
+/* ---------- toast: an RPG message, white double frame on night ink ---------- */
 .toasts {
   position: fixed;
   left: 50%;
@@ -84,20 +84,43 @@
 }
 
 .toast {
+  --frame: 0 0 0 3px #fff, 0 0 0 6px #10122B, 6px 9px 0 3px rgba(0, 0, 0, 0.3);
   padding: var(--s-3) var(--s-4);
-  border-radius: var(--r-control);
-  background: var(--ink);
-  color: var(--on-ink);
+  background: #10122B;
+  color: #fff;
   font-size: var(--t-sm);
-  font-weight: 600;
-  box-shadow: var(--shadow-pop);
-  animation: sheet-rise 200ms var(--ease-out);
+  font-weight: 700;
+  box-shadow: var(--frame);
   overflow-wrap: anywhere;
 }
-.toast--error { background: var(--danger); color: #fff; }
+.toast::before {
+  content: '▶';
+  margin-right: var(--s-2);
+  color: var(--coin);
+}
+.toast--error { background: var(--danger); }
 
 @media (min-width: 900px) {
   .toasts { bottom: var(--s-6); }
 }
-.sheet__actions--wrap { flex-wrap: wrap; }
-.sheet__actions--wrap .btn { flex: 1 1 140px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet-layer { animation: sheet-fade 160ms steps(3); }
+  /* opens from a line to the full box */
+  .sheet { animation: box-open 280ms steps(5) both; }
+  .toast { animation: toast-in 260ms steps(4); }
+  .toast::before { animation: toast-caret 800ms steps(1) infinite; }
+
+  @keyframes sheet-fade { from { opacity: 0; } }
+  @keyframes box-open {
+    from { clip-path: inset(48% 0 48% 0); }
+    /* negative inset so the dialog frame's outer shadows aren't clipped once open */
+    to { clip-path: inset(-40px); }
+  }
+  @keyframes toast-in {
+    0% { transform: translateY(16px); opacity: 0; }
+    70% { transform: translateY(-4px); opacity: 1; }
+    100% { transform: none; }
+  }
+  @keyframes toast-caret { 50% { opacity: 0; } }
+}
